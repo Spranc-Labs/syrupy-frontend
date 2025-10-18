@@ -28,7 +28,12 @@
     /* Types */
     "types": ["node", "vite/client"],
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+
+    /* Composite project support */
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true
   },
   "include": ["src", "vite.config.ts"]
 } 
