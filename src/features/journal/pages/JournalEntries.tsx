@@ -380,13 +380,13 @@ export const JournalEntries: React.FC = () => {
               </div>
 
               {/* Tags and Emotions */}
-              {(entry.tags && entry.tags.length > 0 || entry.emotion_label_analysis && Object.keys(entry.emotion_label_analysis.payload).length > 0) && (
+              {(entry.tags && entry.tags.length > 0 || entry.emotion_label_analysis?.payload && Object.keys(entry.emotion_label_analysis.payload).length > 0) && (
                 <div className="flex flex-wrap gap-2 mt-4">
                   {entry.tags?.map((tag) => (
                     <span
                       key={tag.id}
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        selectedTag === tag.name 
+                        selectedTag === tag.name
                           ? 'bg-indigo-200 dark:bg-indigo-800 text-indigo-900 dark:text-indigo-100'
                           : 'bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200'
                       }`}
@@ -394,7 +394,7 @@ export const JournalEntries: React.FC = () => {
                       <span dangerouslySetInnerHTML={{ __html: highlightSearchTerms(tag.name, searchQuery) }} />
                     </span>
                   ))}
-                  {entry.emotion_label_analysis && Object.entries(entry.emotion_label_analysis.payload)
+                  {entry.emotion_label_analysis?.payload && Object.entries(entry.emotion_label_analysis.payload)
                     .sort(([,a], [,b]) => b - a)
                     .slice(0, 5)
                     .map(([emotion, score]) => (
