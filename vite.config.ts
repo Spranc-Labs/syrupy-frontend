@@ -1,5 +1,5 @@
-import path from 'path'
-
+import path from 'node:path'
+import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
@@ -20,7 +20,15 @@ export default defineConfig({
       protocol: 'ws',
     },
   },
-  plugins: [react()],
+  plugins: [
+    TanStackRouterVite({
+      routesDirectory: './src/routes',
+      generatedRouteTree: './src/routeTree.gen.ts',
+      routeFileIgnorePrefix: '-',
+      quoteStyle: 'single',
+    }),
+    react(),
+  ],
   define: {
     __APP_VERSION__: process.env.COMMIT_HASH
       ? JSON.stringify(process.env.COMMIT_HASH)
@@ -29,7 +37,14 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      src: `${path.resolve(__dirname, './src/')}`,
+      '@': path.resolve(__dirname, './src'),
+      '@/app': path.resolve(__dirname, './src/app'),
+      '@/pages': path.resolve(__dirname, './src/pages'),
+      '@/widgets': path.resolve(__dirname, './src/widgets'),
+      '@/features': path.resolve(__dirname, './src/features'),
+      '@/entities': path.resolve(__dirname, './src/entities'),
+      '@/shared': path.resolve(__dirname, './src/shared'),
+      src: path.resolve(__dirname, './src'),
     },
   },
-}) 
+})

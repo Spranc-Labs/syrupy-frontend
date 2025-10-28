@@ -1,0 +1,43 @@
+import type { HTMLAttributes, ReactNode } from 'react'
+import { cn } from '@/shared/lib'
+
+export interface {{pascalCase name}}Props extends HTMLAttributes<HTMLDivElement> {
+  /**
+   * {{pascalCase name}} content
+   */
+  children: ReactNode
+  /**
+   * Variant
+   * @default 'default'
+   */
+  variant?: 'default' | 'primary' | 'secondary'
+}
+
+/**
+ * {{pascalCase name}} component
+ *
+ * @example
+ * <{{pascalCase name}}>Content here</{{pascalCase name}}>
+ */
+export function {{pascalCase name}}({
+  children,
+  variant = 'default',
+  className,
+  ...props
+}: {{pascalCase name}}Props) {
+  return (
+    <div
+      className={cn(
+        '{{pascalCase name}}',
+        {
+          '{{pascalCase name}}--primary': variant === 'primary',
+          '{{pascalCase name}}--secondary': variant === 'secondary',
+        },
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}

@@ -1,0 +1,11 @@
+/**
+ * Query key factory for {{camelCase name}} entity
+ */
+export const {{camelCase name}}Keys = {
+  all: ['{{camelCase name}}s'] as const,
+  lists: () => [...{{camelCase name}}Keys.all, 'list'] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...{{camelCase name}}Keys.lists(), filters] as const,
+  details: () => [...{{camelCase name}}Keys.all, 'detail'] as const,
+  detail: (id: string) => [...{{camelCase name}}Keys.details(), id] as const,
+} as const

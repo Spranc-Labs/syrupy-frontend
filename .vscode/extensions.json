@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "biomejs.biome",
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+    "tanstack.vscode-router-devtools",
+    "chrmarti.regex",
+    "usernamehw.errorlens"
+  ]
+}
