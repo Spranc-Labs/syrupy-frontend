@@ -17,6 +17,13 @@ export function ConnectHeyHoBanner({ className }: ConnectHeyHoBannerProps) {
     try {
       const result = await initiateLink.mutateAsync()
 
+      // Construct authorization URL using browser-accessible HeyHo API URL
+      const heyhoApiUrl = import.meta.env.VITE_SYNC_API_URL || 'http://localhost:3001'
+      const authorizeUrl = new URL(`${heyhoApiUrl}/api/v1/oauth/authorize`)
+      authorizeUrl.searchParams.set('client_id', result.client_id)
+      authorizeUrl.searchParams.set('redirect_uri', result.redirect_uri)
+      authorizeUrl.searchParams.set('scope', 'browsing_data:read')
+
       // Open HeyHo authorization in popup window
       const width = 600
       const height = 700
@@ -24,7 +31,7 @@ export function ConnectHeyHoBanner({ className }: ConnectHeyHoBannerProps) {
       const top = window.screen.height / 2 - height / 2
 
       const popup = window.open(
-        result.authorize_url,
+        authorizeUrl.toString(),
         'HeyHo Authorization',
         `width=${width},height=${height},left=${left},top=${top}`
       )
