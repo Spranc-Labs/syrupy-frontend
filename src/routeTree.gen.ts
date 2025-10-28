@@ -19,6 +19,7 @@ import { Route as AuthenticatedJournalRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedHabitsRouteImport } from './routes/_authenticated/habits'
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthHeyhoAuthorizeRouteImport } from './routes/auth/heyho/authorize'
 import { Route as AuthenticatedJournalNewRouteImport } from './routes/_authenticated/journal.new'
 import { Route as AuthenticatedJournalIdEditRouteImport } from './routes/_authenticated/journal.$id.edit'
 
@@ -71,6 +72,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthHeyhoAuthorizeRoute = AuthHeyhoAuthorizeRouteImport.update({
+  id: '/auth/heyho/authorize',
+  path: '/auth/heyho/authorize',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedJournalNewRoute = AuthenticatedJournalNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/mood': typeof AuthenticatedMoodRoute
   '/resources': typeof AuthenticatedResourcesRoute
   '/journal/new': typeof AuthenticatedJournalNewRoute
+  '/auth/heyho/authorize': typeof AuthHeyhoAuthorizeRoute
   '/journal/$id/edit': typeof AuthenticatedJournalIdEditRoute
 }
 export interface FileRoutesByTo {
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   '/mood': typeof AuthenticatedMoodRoute
   '/resources': typeof AuthenticatedResourcesRoute
   '/journal/new': typeof AuthenticatedJournalNewRoute
+  '/auth/heyho/authorize': typeof AuthHeyhoAuthorizeRoute
   '/journal/$id/edit': typeof AuthenticatedJournalIdEditRoute
 }
 export interface FileRoutesById {
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/_authenticated/mood': typeof AuthenticatedMoodRoute
   '/_authenticated/resources': typeof AuthenticatedResourcesRoute
   '/_authenticated/journal/new': typeof AuthenticatedJournalNewRoute
+  '/auth/heyho/authorize': typeof AuthHeyhoAuthorizeRoute
   '/_authenticated/journal/$id/edit': typeof AuthenticatedJournalIdEditRoute
 }
 export interface FileRouteTypes {
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
     | '/mood'
     | '/resources'
     | '/journal/new'
+    | '/auth/heyho/authorize'
     | '/journal/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/mood'
     | '/resources'
     | '/journal/new'
+    | '/auth/heyho/authorize'
     | '/journal/$id/edit'
   id:
     | '__root__'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/_authenticated/mood'
     | '/_authenticated/resources'
     | '/_authenticated/journal/new'
+    | '/auth/heyho/authorize'
     | '/_authenticated/journal/$id/edit'
   fileRoutesById: FileRoutesById
 }
@@ -172,6 +184,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  AuthHeyhoAuthorizeRoute: typeof AuthHeyhoAuthorizeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -246,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/auth/heyho/authorize': {
+      id: '/auth/heyho/authorize'
+      path: '/auth/heyho/authorize'
+      fullPath: '/auth/heyho/authorize'
+      preLoaderRoute: typeof AuthHeyhoAuthorizeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/journal/new': {
       id: '/_authenticated/journal/new'
       path: '/new'
@@ -303,6 +323,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  AuthHeyhoAuthorizeRoute: AuthHeyhoAuthorizeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

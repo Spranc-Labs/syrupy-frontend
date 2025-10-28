@@ -17,20 +17,15 @@ export function ConnectHeyHoBanner({ className }: ConnectHeyHoBannerProps) {
     try {
       const result = await initiateLink.mutateAsync()
 
-      // Construct authorization URL using browser-accessible HeyHo API URL
-      const heyhoApiUrl = import.meta.env.VITE_SYNC_API_URL || 'http://localhost:3001'
-      const authorizeUrl = new URL(`${heyhoApiUrl}/api/v1/oauth/authorize`)
+      // Construct our own authorization page URL
+      const authorizeUrl = new URL('/auth/heyho/authorize', window.location.origin)
       authorizeUrl.searchParams.set('client_id', result.client_id)
       authorizeUrl.searchParams.set('redirect_uri', result.redirect_uri)
       authorizeUrl.searchParams.set('scope', 'browsing_data:read')
 
-      // Check if user needs to login to HeyHo first
-      // Open HeyHo in a new tab so they can login if needed
-      const heyhoLoginUrl = `${heyhoApiUrl}/login?redirect_to=${encodeURIComponent(authorizeUrl.toString())}`
-
-      // Open HeyHo authorization in popup window
-      const width = 600
-      const height = 700
+      // Open authorization page in popup window
+      const width = 500
+      const height = 650
       const left = window.screen.width / 2 - width / 2
       const top = window.screen.height / 2 - height / 2
 
@@ -55,7 +50,7 @@ export function ConnectHeyHoBanner({ className }: ConnectHeyHoBannerProps) {
       }, 500)
     } catch (error) {
       console.error('Failed to initiate HeyHo connection:', error)
-      alert('Failed to connect to HeyHo. Please make sure HeyHo is running and try again.')
+      alert('Failed to connect to HeyHo. Please try again.')
       setIsConnecting(false)
     }
   }
@@ -81,15 +76,8 @@ export function ConnectHeyHoBanner({ className }: ConnectHeyHoBannerProps) {
           </Button>
         </div>
         <div className="text-sm opacity-75 pt-2 border-t border-current/20">
-          <strong>Note:</strong> Make sure you're logged into HeyHo first.{' '}
-          <a
-            href={import.meta.env.VITE_SYNC_API_URL || 'http://localhost:3001'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:opacity-80"
-          >
-            Open HeyHo
-          </a>
+          <strong>Note:</strong> You'll need your HeyHo email and password to authorize the
+          connection.
         </div>
       </div>
     </Alert>
