@@ -8,7 +8,10 @@ import { accountLinkKeys } from './keys'
  */
 async function fetchAccountLinkStatus(): Promise<HeyHoAccountStatus> {
   const response = await apiClient.get<HeyHoAccountStatus>('/account_links/status')
-  return response as HeyHoAccountStatus
+  if (!response.data) {
+    throw new Error('No data returned from API')
+  }
+  return response.data
 }
 
 /**

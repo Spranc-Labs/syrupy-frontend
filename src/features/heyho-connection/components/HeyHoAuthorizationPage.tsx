@@ -17,6 +17,7 @@ export function HeyHoAuthorizationPage({
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [success, setSuccess] = useState(false)
   const completeLink = useCompleteHeyHoLink()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,8 +54,18 @@ export function HeyHoAuthorizationPage({
         redirect_uri: redirectUri,
       })
 
-      // Close popup and notify parent
-      window.close()
+      // Show success state
+      setSuccess(true)
+
+      // Notify parent window of successful authorization
+      if (window.opener) {
+        window.opener.postMessage({ type: 'heyho-auth-success' }, window.location.origin)
+      }
+
+      // Close popup after showing success message
+      setTimeout(() => {
+        window.close()
+      }, 1500)
     } catch (err) {
       setError('Failed to authorize. Please try again.')
       setIsSubmitting(false)
@@ -64,59 +75,88 @@ export function HeyHoAuthorizationPage({
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center p-4">
       <Card className="max-w-md w-full">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold mb-2">Authorize Syrupy</h1>
-          <p className="text-base-content/60">
-            Syrupy is requesting access to your HeyHo browsing data
-          </p>
-        </div>
-
-        <div className="bg-base-300 p-4 rounded-lg mb-6">
-          <h2 className="font-semibold mb-2">Requested Permissions:</h2>
-          <ul className="list-disc list-inside text-sm space-y-1">
-            <li>Read your browsing history</li>
-            <li>View browsing insights and patterns</li>
-          </ul>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
-            required
-          />
-
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Your HeyHo password"
-            required
-          />
-
-          {error && (
-            <div className="alert alert-error">
-              <span>{error}</span>
+        {success ? (
+          <div className="text-center py-8">
+            <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
+              <svg
+                className="w-8 h-8 text-success"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
             </div>
-          )}
-
-          <div className="flex gap-3">
-            <Button type="button" variant="ghost" onClick={() => window.close()} className="flex-1">
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary" disabled={isSubmitting} className="flex-1">
-              {isSubmitting ? 'Authorizing...' : 'Authorize'}
-            </Button>
+            <h2 className="text-xl font-bold mb-2">Successfully Connected!</h2>
+            <p className="text-base-content/60">Your HeyHo account is now linked to Syrupy.</p>
           </div>
-        </form>
+        ) : (
+          <>
+            <div className="text-center mb-6">
+              <h1 className="text-2xl font-bold mb-2">Authorize Syrupy</h1>
+              <p className="text-base-content/60">
+                Syrupy is requesting access to your HeyHo browsing data
+              </p>
+            </div>
 
-        <p className="text-xs text-center text-base-content/60 mt-4">
-          By authorizing, you allow Syrupy to access your HeyHo data as described above.
-        </p>
+            <div className="bg-base-300 p-4 rounded-lg mb-6">
+              <h2 className="font-semibold mb-2">Requested Permissions:</h2>
+              <ul className="list-disc list-inside text-sm space-y-1">
+                <li>Read your browsing history</li>
+                <li>View browsing insights and patterns</li>
+              </ul>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <Input
+                label="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+              />
+
+              <Input
+                label="Password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Your HeyHo password"
+                required
+              />
+
+              {error && (
+                <div className="alert alert-error">
+                  <span>{error}</span>
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => window.close()}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" variant="primary" disabled={isSubmitting} className="flex-1">
+                  {isSubmitting ? 'Authorizing...' : 'Authorize'}
+                </Button>
+              </div>
+            </form>
+
+            <p className="text-xs text-center text-base-content/60 mt-4">
+              By authorizing, you allow Syrupy to access your HeyHo data as described above.
+            </p>
+          </>
+        )}
       </Card>
     </div>
   )

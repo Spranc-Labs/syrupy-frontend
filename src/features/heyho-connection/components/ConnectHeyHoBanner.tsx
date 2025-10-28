@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import { useInitiateHeyHoLink } from '@/entities/account-link'
+import { useQueryClient } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+import { accountLinkKeys, useInitiateHeyHoLink } from '@/entities/account-link'
 import { cn } from '@/shared/lib'
 import { Alert, Button } from '@/shared/ui'
 
@@ -10,12 +11,29 @@ export interface ConnectHeyHoBannerProps {
 export function ConnectHeyHoBanner({ className }: ConnectHeyHoBannerProps) {
   const [isConnecting, setIsConnecting] = useState(false)
   const initiateLink = useInitiateHeyHoLink()
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    // Listen for successful authorization from popup
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return
+
+      if (event.data?.type === 'heyho-auth-success') {
+        // Refetch account link status
+        queryClient.invalidateQueries({ queryKey: accountLinkKeys.status() })
+        setIsConnecting(false)
+      }
+    }
+
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
+  }, [queryClient])
 
   const handleConnect = async () => {
     setIsConnecting(true)
 
     try {
-      const result = await initiateLink.mutateAsync()
+      const result = await initiateLink.mutateAsync(undefined)
 
       // Construct our own authorization page URL
       const authorizeUrl = new URL('/auth/heyho/authorize', window.location.origin)
@@ -41,7 +59,7 @@ export function ConnectHeyHoBanner({ className }: ConnectHeyHoBannerProps) {
         return
       }
 
-      // Poll for popup close or message
+      // Poll for popup close (in case user closes without completing)
       const pollTimer = setInterval(() => {
         if (popup?.closed) {
           clearInterval(pollTimer)

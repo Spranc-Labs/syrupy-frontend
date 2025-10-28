@@ -75,7 +75,13 @@ export function HeyHoConnectionStatus({ status, className }: HeyHoConnectionStat
             >
               Cancel
             </Button>
-            <Button variant="error" size="sm" onClick={handleUnlink} disabled={isUnlinking}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleUnlink}
+              disabled={isUnlinking}
+              className="btn-error"
+            >
               {isUnlinking ? 'Disconnecting...' : 'Confirm'}
             </Button>
           </div>
