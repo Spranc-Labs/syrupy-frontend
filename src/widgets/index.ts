@@ -1,4 +1,7 @@
-export { Layout } from './Layout'
-export { Navigation } from './Navigation'
-export { SettingsModal } from './SettingsModal'
-export { FullscreenSpinner, Spinner } from './Spinner'
+// Layout widgets
+export { Layout } from './layout/Layout'
+export { Navigation } from './layout/Navigation'
+// Loading widgets
+export { FullscreenSpinner, Spinner } from './loading/Spinner'
+// Modal widgets
+export { SettingsModal } from './modals/SettingsModal'

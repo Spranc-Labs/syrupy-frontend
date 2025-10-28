@@ -2,7 +2,7 @@ import { Link, useRouterState } from '@tanstack/react-router'
 import type React from 'react'
 import { useState } from 'react'
 import { useAuth } from '@/app/providers'
-import { SettingsModal } from './SettingsModal'
+import { SettingsModal } from '../modals/SettingsModal'
 
 export const Navigation: React.FC = () => {
   const router = useRouterState()

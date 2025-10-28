@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { Login as LoginPage } from '@/features/auth/pages/Login'
+import { Login as LoginPage } from '@/features/auth/ui/Login'
 import { tokenStorage } from '@/shared/api'
 
 type LoginSearch = {

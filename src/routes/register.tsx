@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { Register as RegisterPage } from '@/features/auth/pages/Register'
+import { Register as RegisterPage } from '@/features/auth/ui/Register'
 import { tokenStorage } from '@/shared/api'
 
 /**
