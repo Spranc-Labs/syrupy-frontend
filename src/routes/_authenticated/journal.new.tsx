@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { JournalEditor } from 'src/features/journal/pages/JournalEditor'
+import { JournalEditor } from '@/features/journal-writing/ui/JournalEditor'
 
 /**
  * New journal entry route

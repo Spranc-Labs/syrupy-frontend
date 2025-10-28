@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { MoodLogs } from 'src/features/mood/pages/MoodLogs'
+import { MoodLogs } from '@/features/mood-tracking/ui/MoodLogs'
 
 /**
  * Mood logs route

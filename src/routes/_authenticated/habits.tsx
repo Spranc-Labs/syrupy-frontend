@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Habits } from 'src/features/habits/pages/Habits'
+import { Habits } from '@/features/habit-formation/ui/Habits'
 
 /**
  * Habits route

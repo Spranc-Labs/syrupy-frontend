@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Resources } from 'src/features/resources/pages/Resources'
+import { Resources } from '@/features/resource-library/ui/Resources'
 
 /**
  * Resources route

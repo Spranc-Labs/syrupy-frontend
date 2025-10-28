@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Goals } from 'src/features/goals/pages/Goals'
+import { Goals } from '@/features/goal-tracking/ui/Goals'
 
 /**
  * Goals route

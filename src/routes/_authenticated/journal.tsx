@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { JournalEntries } from 'src/features/journal/pages/JournalEntries'
+import { JournalEntries } from '@/features/journal-writing/ui/JournalEntries'
 
 /**
  * Journal list route
