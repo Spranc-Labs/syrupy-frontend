@@ -1,5 +1,7 @@
 import type React from 'react'
 import { useCallback, useEffect, useState } from 'react'
+import { useAccountLinkStatus } from '@/entities/account-link'
+import { ConnectHeyHoBanner, HeyHoConnectionStatus } from '@/features/heyho-connection'
 import { apiClient } from '@/shared/api'
 
 interface ResourcesResponse {
@@ -32,6 +34,9 @@ export const Resources: React.FC = () => {
   const [newResourceUrl, setNewResourceUrl] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+
+  // HeyHo account link status
+  const { data: linkStatus } = useAccountLinkStatus()
 
   const fetchResources = useCallback(async () => {
     try {
@@ -167,6 +172,9 @@ export const Resources: React.FC = () => {
           />
         </div>
       </div>
+
+      {/* HeyHo Connection */}
+      {linkStatus?.linked ? <HeyHoConnectionStatus status={linkStatus} /> : <ConnectHeyHoBanner />}
 
       {/* Add Resource Modal */}
       {showAddForm && (
