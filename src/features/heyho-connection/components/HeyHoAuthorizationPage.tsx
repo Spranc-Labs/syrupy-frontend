@@ -27,8 +27,8 @@ export function HeyHoAuthorizationPage({
 
     try {
       // Call HeyHo to get authorization code
-      const heyhoApiUrl = import.meta.env.VITE_SYNC_API_URL || 'http://localhost:3001'
-      const response = await fetch(`${heyhoApiUrl}/api/v1/oauth/authorize`, {
+      const heyhoApiUrl = import.meta.env.VITE_SYNC_API_URL || 'http://localhost:3001/api/v1'
+      const response = await fetch(`${heyhoApiUrl}/oauth/authorize`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

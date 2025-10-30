@@ -12,16 +12,22 @@ export interface HeyHoConnectionStatusProps {
 export function HeyHoConnectionStatus({ status, className }: HeyHoConnectionStatusProps) {
   const [isUnlinking, setIsUnlinking] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const unlinkAccount = useUnlinkHeyHoAccount()
 
   const handleUnlink = async () => {
+    console.log('handleUnlink called')
     setIsUnlinking(true)
+    setError(null)
 
     try {
+      console.log('Calling unlinkAccount.mutateAsync()')
       await unlinkAccount.mutateAsync()
+      console.log('Successfully unlinked')
       setShowConfirm(false)
-    } catch (error) {
-      console.error('Failed to unlink HeyHo account:', error)
+    } catch (err) {
+      console.error('Failed to unlink HeyHo account:', err)
+      setError('Failed to disconnect. Please try again.')
     } finally {
       setIsUnlinking(false)
     }
@@ -35,55 +41,63 @@ export function HeyHoConnectionStatus({ status, className }: HeyHoConnectionStat
 
   return (
     <Card className={cn('mb-6', className)}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <svg
-              className="w-6 h-6 text-primary"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
-            </svg>
-          </div>
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="font-semibold">HeyHo Browser Extension</span>
-              <Badge variant="success">Connected</Badge>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <svg
+                className="w-6 h-6 text-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
             </div>
-            <p className="text-sm text-base-content/60">Connected on {linkedDate}</p>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-semibold">HeyHo Browser Extension</span>
+                <Badge variant="success">Connected</Badge>
+              </div>
+              <p className="text-sm text-base-content/60">Connected on {linkedDate}</p>
+            </div>
           </div>
+
+          {!showConfirm ? (
+            <Button variant="ghost" size="sm" onClick={() => setShowConfirm(true)}>
+              Disconnect
+            </Button>
+          ) : (
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowConfirm(false)}
+                disabled={isUnlinking}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleUnlink}
+                disabled={isUnlinking}
+                className="btn-error"
+              >
+                {isUnlinking ? 'Disconnecting...' : 'Confirm'}
+              </Button>
+            </div>
+          )}
         </div>
 
-        {!showConfirm ? (
-          <Button variant="ghost" size="sm" onClick={() => setShowConfirm(true)}>
-            Disconnect
-          </Button>
-        ) : (
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowConfirm(false)}
-              disabled={isUnlinking}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handleUnlink}
-              disabled={isUnlinking}
-              className="btn-error"
-            >
-              {isUnlinking ? 'Disconnecting...' : 'Confirm'}
-            </Button>
+        {error && (
+          <div className="alert alert-error">
+            <span>{error}</span>
           </div>
         )}
       </div>

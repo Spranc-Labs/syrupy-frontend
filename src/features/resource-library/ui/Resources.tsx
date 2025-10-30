@@ -1,8 +1,12 @@
 import type React from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { useAccountLinkStatus } from '@/entities/account-link'
+import { useBrowsingSessions } from '@/entities/browsing-session'
 import { ConnectHeyHoBanner, HeyHoConnectionStatus } from '@/features/heyho-connection'
 import { apiClient } from '@/shared/api'
+import { BrowserTabsGrid } from '../components/BrowserTabsGrid'
+import type { ResourceTab } from '../components/ResourceTabs'
+import { ResourceTabs } from '../components/ResourceTabs'
 
 interface ResourcesResponse {
   items: Resource[]
@@ -34,9 +38,24 @@ export const Resources: React.FC = () => {
   const [newResourceUrl, setNewResourceUrl] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [activeTab, setActiveTab] = useState<ResourceTab>('reading-list')
 
   // HeyHo account link status
   const { data: linkStatus } = useAccountLinkStatus()
+
+  // Fetch browsing sessions (HeyHo tabs) only if linked
+  // No limit - fetch all hoarder tabs (backend fetches from hoarder_tabs endpoint)
+  const {
+    data: browsingSessions,
+    isLoading: isLoadingBrowserTabs,
+    error: browserTabsError,
+  } = useBrowsingSessions(undefined, {
+    enabled: Boolean(linkStatus?.linked),
+  })
+
+  // Extract all tabs from sessions (backend returns hoarder tabs wrapped in sessions format)
+  const allBrowserTabs =
+    browsingSessions?.sessions?.flatMap((session) => session.research_session_tabs || []) || []
 
   const fetchResources = useCallback(async () => {
     try {
@@ -176,6 +195,18 @@ export const Resources: React.FC = () => {
       {/* HeyHo Connection */}
       {linkStatus?.linked ? <HeyHoConnectionStatus status={linkStatus} /> : <ConnectHeyHoBanner />}
 
+      {/* Tabs - Only show if HeyHo is linked */}
+      {linkStatus?.linked && (
+        <ResourceTabs
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          tabCounts={{
+            heyhoTabs: allBrowserTabs.length,
+            readingList: resources.length,
+          }}
+        />
+      )}
+
       {/* Add Resource Modal */}
       {showAddForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -218,78 +249,132 @@ export const Resources: React.FC = () => {
         </div>
       )}
 
-      {/* Resources List */}
-      <div className="space-y-4">
-        {filteredResources.length === 0 ? (
-          <div className="py-12 text-center">
-            <div className="mb-4 text-gray-400">
-              <svg
-                className="mx-auto h-16 w-16"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                />
-              </svg>
+      {/* Tab Content */}
+      <div className="mt-6">
+        {activeTab === 'heyho-tabs' ? (
+          /* HeyHo Browser Tabs */
+          isLoadingBrowserTabs ? (
+            <div className="flex justify-center p-8 text-gray-600 dark:text-gray-400">
+              Loading browser tabs...
             </div>
-            <h3 className="mb-2 font-medium text-gray-900 text-lg dark:text-white">
-              No resources yet
-            </h3>
-            <p className="mb-4 text-gray-600 dark:text-gray-400">
-              Start building your personal library by adding your first resource
-            </p>
-            <button
-              onClick={() => setShowAddForm(true)}
-              className="rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white transition-colors hover:bg-indigo-700"
-            >
-              Add Your First Resource
-            </button>
-          </div>
+          ) : browserTabsError ? (
+            <div className="py-12 text-center">
+              <p className="text-red-600 dark:text-red-400">
+                Failed to load browser tabs. Please try again.
+              </p>
+            </div>
+          ) : (
+            <BrowserTabsGrid tabs={allBrowserTabs} onAddToReadingList={() => fetchResources()} />
+          )
         ) : (
-          filteredResources
-            .map((resource) => {
-              // Safety check for malformed resource objects
-              if (!resource || !resource.id || !resource.url) {
-                return null
-              }
-
-              return (
-                <div
-                  key={resource.id}
-                  className="rounded-lg border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+          /* Reading List */
+          <div className="space-y-4">
+            {filteredResources.length === 0 ? (
+              <div className="py-12 text-center">
+                <div className="mb-4 text-gray-400">
+                  <svg
+                    className="mx-auto h-16 w-16"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                    />
+                  </svg>
+                </div>
+                <h3 className="mb-2 font-medium text-gray-900 text-lg dark:text-white">
+                  No resources yet
+                </h3>
+                <p className="mb-4 text-gray-600 dark:text-gray-400">
+                  Start building your personal library by adding your first resource
+                </p>
+                <button
+                  onClick={() => setShowAddForm(true)}
+                  className="rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white transition-colors hover:bg-indigo-700"
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="mb-2 flex items-center space-x-2">
-                        {getStatusBadge(resource.status)}
-                        {resource.domain && (
-                          <span className="text-gray-500 text-sm dark:text-gray-400">
-                            {resource.domain}
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="mb-2 font-medium text-gray-900 text-lg dark:text-white">
-                        {resource.title || 'Untitled'}
-                      </h3>
-                      <a
-                        href={resource.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="break-all text-indigo-600 hover:underline dark:text-indigo-400"
-                      >
-                        {resource.url}
-                      </a>
-                      <div className="mt-3 flex items-center space-x-4 text-gray-500 text-sm dark:text-gray-400">
-                        <span>Added {new Date(resource.created_at).toLocaleDateString()}</span>
-                        {resource.has_content && (
-                          <span className="flex items-center">
+                  Add Your First Resource
+                </button>
+              </div>
+            ) : (
+              filteredResources
+                .map((resource) => {
+                  // Safety check for malformed resource objects
+                  if (!resource || !resource.id || !resource.url) {
+                    return null
+                  }
+
+                  return (
+                    <div
+                      key={resource.id}
+                      className="rounded-lg border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="mb-2 flex items-center space-x-2">
+                            {getStatusBadge(resource.status)}
+                            {resource.domain && (
+                              <span className="text-gray-500 text-sm dark:text-gray-400">
+                                {resource.domain}
+                              </span>
+                            )}
+                          </div>
+                          <h3 className="mb-2 font-medium text-gray-900 text-lg dark:text-white">
+                            {resource.title || 'Untitled'}
+                          </h3>
+                          <a
+                            href={resource.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="break-all text-indigo-600 hover:underline dark:text-indigo-400"
+                          >
+                            {resource.url}
+                          </a>
+                          <div className="mt-3 flex items-center space-x-4 text-gray-500 text-sm dark:text-gray-400">
+                            <span>Added {new Date(resource.created_at).toLocaleDateString()}</span>
+                            {resource.has_content && (
+                              <span className="flex items-center">
+                                <svg
+                                  className="mr-1 h-4 w-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                  />
+                                </svg>
+                                Content saved
+                              </span>
+                            )}
+                          </div>
+                          {resource.tags && resource.tags.length > 0 && (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {resource.tags.map((tag) => (
+                                <span
+                                  key={tag.id}
+                                  className="inline-flex items-center rounded-full px-2.5 py-0.5 font-medium text-xs"
+                                  style={{ backgroundColor: `${tag.color}20`, color: tag.color }}
+                                >
+                                  {tag.name}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <div className="ml-4">
+                          <button
+                            onClick={() => handleDeleteResource(resource.id)}
+                            className="text-gray-400 transition-colors hover:text-red-600 dark:hover:text-red-400"
+                          >
                             <svg
-                              className="mr-1 h-4 w-4"
+                              className="h-5 w-5"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -298,52 +383,18 @@ export const Resources: React.FC = () => {
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 strokeWidth={2}
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                               />
                             </svg>
-                            Content saved
-                          </span>
-                        )}
-                      </div>
-                      {resource.tags && resource.tags.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {resource.tags.map((tag) => (
-                            <span
-                              key={tag.id}
-                              className="inline-flex items-center rounded-full px-2.5 py-0.5 font-medium text-xs"
-                              style={{ backgroundColor: `${tag.color}20`, color: tag.color }}
-                            >
-                              {tag.name}
-                            </span>
-                          ))}
+                          </button>
                         </div>
-                      )}
+                      </div>
                     </div>
-                    <div className="ml-4">
-                      <button
-                        onClick={() => handleDeleteResource(resource.id)}
-                        className="text-gray-400 transition-colors hover:text-red-600 dark:hover:text-red-400"
-                      >
-                        <svg
-                          className="h-5 w-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )
-            })
-            .filter(Boolean) // Remove any null entries
+                  )
+                })
+                .filter(Boolean) // Remove any null entries
+            )}
+          </div>
         )}
       </div>
     </div>

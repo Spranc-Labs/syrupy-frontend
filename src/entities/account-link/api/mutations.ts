@@ -10,10 +10,8 @@ async function initiateHeyHoLink(redirectUri?: string): Promise<InitiateHeyHoLin
   const response = await apiClient.post<InitiateHeyHoLinkResponse>('/account_links', {
     redirect_uri: redirectUri,
   })
-  if (!response.data) {
-    throw new Error('No data returned from API')
-  }
-  return response.data
+  // Response is the data itself (not wrapped in .data field)
+  return response as unknown as InitiateHeyHoLinkResponse
 }
 
 /**
@@ -21,10 +19,8 @@ async function initiateHeyHoLink(redirectUri?: string): Promise<InitiateHeyHoLin
  */
 async function completeHeyHoLink(params: HeyHoCallbackParams): Promise<HeyHoLinkResult> {
   const response = await apiClient.post<HeyHoLinkResult>('/account_links/callback', params)
-  if (!response.data) {
-    throw new Error('No data returned from API')
-  }
-  return response.data
+  // Response is the data itself (not wrapped in .data field)
+  return response as unknown as HeyHoLinkResult
 }
 
 /**
@@ -32,10 +28,8 @@ async function completeHeyHoLink(params: HeyHoCallbackParams): Promise<HeyHoLink
  */
 async function unlinkHeyHoAccount(): Promise<HeyHoLinkResult> {
   const response = await apiClient.delete<HeyHoLinkResult>('/account_links')
-  if (!response.data) {
-    throw new Error('No data returned from API')
-  }
-  return response.data
+  // Response is the data itself (not wrapped in .data field)
+  return response as unknown as HeyHoLinkResult
 }
 
 /**
