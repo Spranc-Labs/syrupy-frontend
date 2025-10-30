@@ -67,7 +67,7 @@ export function BrowserTabsGrid({ tabs, onAddToReadingList }: BrowserTabsGridPro
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {tabs.map((tab) => {
         const isAdding = addingTabs.has(tab.id)
-        const displayTitle = tab.preview?.title || tab.title || 'Untitled Tab'
+        const displayTitle = tab.title || tab.preview?.site_name || 'Untitled Tab'
         const previewImage = tab.preview?.image
         const favicon = tab.preview?.favicon
         const description = tab.preview?.description
