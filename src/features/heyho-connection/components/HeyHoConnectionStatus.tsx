@@ -1,0 +1,105 @@
+import { useState } from 'react'
+import type { HeyHoAccountStatus } from '@/entities/account-link'
+import { useUnlinkHeyHoAccount } from '@/entities/account-link'
+import { cn } from '@/shared/lib'
+import { Badge, Button, Card } from '@/shared/ui'
+
+export interface HeyHoConnectionStatusProps {
+  status: HeyHoAccountStatus
+  className?: string
+}
+
+export function HeyHoConnectionStatus({ status, className }: HeyHoConnectionStatusProps) {
+  const [isUnlinking, setIsUnlinking] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const unlinkAccount = useUnlinkHeyHoAccount()
+
+  const handleUnlink = async () => {
+    console.log('handleUnlink called')
+    setIsUnlinking(true)
+    setError(null)
+
+    try {
+      console.log('Calling unlinkAccount.mutateAsync()')
+      await unlinkAccount.mutateAsync()
+      console.log('Successfully unlinked')
+      setShowConfirm(false)
+    } catch (_err) {
+      setError('Failed to disconnect. Please try again.')
+    } finally {
+      setIsUnlinking(false)
+    }
+  }
+
+  if (!status.linked) {
+    return null
+  }
+
+  const linkedDate = status.linked_at ? new Date(status.linked_at).toLocaleDateString() : 'Unknown'
+
+  return (
+    <Card className={cn('mb-6', className)}>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+              <svg
+                className="h-6 w-6 text-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+            <div>
+              <div className="mb-1 flex items-center gap-2">
+                <span className="font-semibold">HeyHo Browser Extension</span>
+                <Badge variant="success">Connected</Badge>
+              </div>
+              <p className="text-base-content/60 text-sm">Connected on {linkedDate}</p>
+            </div>
+          </div>
+
+          {!showConfirm ? (
+            <Button variant="ghost" size="sm" onClick={() => setShowConfirm(true)}>
+              Disconnect
+            </Button>
+          ) : (
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowConfirm(false)}
+                disabled={isUnlinking}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleUnlink}
+                disabled={isUnlinking}
+                className="btn-error"
+              >
+                {isUnlinking ? 'Disconnecting...' : 'Confirm'}
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {error && (
+          <div className="alert alert-error">
+            <span>{error}</span>
+          </div>
+        )}
+      </div>
+    </Card>
+  )
+}
