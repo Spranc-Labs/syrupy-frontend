@@ -25,8 +25,7 @@ export function HeyHoConnectionStatus({ status, className }: HeyHoConnectionStat
       await unlinkAccount.mutateAsync()
       console.log('Successfully unlinked')
       setShowConfirm(false)
-    } catch (err) {
-      console.error('Failed to unlink HeyHo account:', err)
+    } catch (_err) {
       setError('Failed to disconnect. Please try again.')
     } finally {
       setIsUnlinking(false)
@@ -44,9 +43,9 @@ export function HeyHoConnectionStatus({ status, className }: HeyHoConnectionStat
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
               <svg
-                className="w-6 h-6 text-primary"
+                className="h-6 w-6 text-primary"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -60,11 +59,11 @@ export function HeyHoConnectionStatus({ status, className }: HeyHoConnectionStat
               </svg>
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1">
+              <div className="mb-1 flex items-center gap-2">
                 <span className="font-semibold">HeyHo Browser Extension</span>
                 <Badge variant="success">Connected</Badge>
               </div>
-              <p className="text-sm text-base-content/60">Connected on {linkedDate}</p>
+              <p className="text-base-content/60 text-sm">Connected on {linkedDate}</p>
             </div>
           </div>
 

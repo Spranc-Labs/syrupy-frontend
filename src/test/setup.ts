@@ -24,10 +24,16 @@ Object.defineProperty(window, 'matchMedia', {
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
-  disconnect() {}
-  observe() {}
+  disconnect() {
+    // Mock implementation - no cleanup needed in tests
+  }
+  observe() {
+    // Mock implementation - no observation needed in tests
+  }
   takeRecords() {
     return []
   }
-  unobserve() {}
-} as any
+  unobserve() {
+    // Mock implementation - no cleanup needed in tests
+  }
+} as unknown as typeof IntersectionObserver

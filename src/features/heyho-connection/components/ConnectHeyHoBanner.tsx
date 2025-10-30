@@ -66,8 +66,7 @@ export function ConnectHeyHoBanner({ className }: ConnectHeyHoBannerProps) {
           setIsConnecting(false)
         }
       }, 500)
-    } catch (error) {
-      console.error('Failed to initiate HeyHo connection:', error)
+    } catch (_error) {
       alert('Failed to connect to HeyHo. Please try again.')
       setIsConnecting(false)
     }
@@ -78,7 +77,7 @@ export function ConnectHeyHoBanner({ className }: ConnectHeyHoBannerProps) {
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="font-semibold mb-1">Connect Your HeyHo Browser Extension</h3>
+            <h3 className="mb-1 font-semibold">Connect Your HeyHo Browser Extension</h3>
             <p className="text-sm opacity-90">
               Link your HeyHo account to see browsing insights and discover connections between your
               research and saved resources.
@@ -93,7 +92,7 @@ export function ConnectHeyHoBanner({ className }: ConnectHeyHoBannerProps) {
             {isConnecting ? 'Connecting...' : 'Connect HeyHo'}
           </Button>
         </div>
-        <div className="text-sm opacity-75 pt-2 border-t border-current/20">
+        <div className="border-current/20 border-t pt-2 text-sm opacity-75">
           <strong>Note:</strong> You'll need your HeyHo email and password to authorize the
           connection.
         </div>

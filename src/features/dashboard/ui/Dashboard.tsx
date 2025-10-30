@@ -122,7 +122,13 @@ export const Dashboard: React.FC = () => {
               </p>
             </div>
             <div className="text-indigo-600 dark:text-indigo-400">
-              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="h-8 w-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-label="Journal entries icon"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -144,7 +150,13 @@ export const Dashboard: React.FC = () => {
               <p className="font-bold text-3xl text-green-600 dark:text-green-400">{stats.goals}</p>
             </div>
             <div className="text-green-600 dark:text-green-400">
-              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="h-8 w-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-label="Goals icon"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -168,7 +180,13 @@ export const Dashboard: React.FC = () => {
               </p>
             </div>
             <div className="text-purple-600 dark:text-purple-400">
-              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="h-8 w-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-label="Habits icon"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -192,7 +210,13 @@ export const Dashboard: React.FC = () => {
               </p>
             </div>
             <div className="text-yellow-600 dark:text-yellow-400">
-              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="h-8 w-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-label="Mood logs icon"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -216,7 +240,13 @@ export const Dashboard: React.FC = () => {
               </p>
             </div>
             <div className="text-blue-600 dark:text-blue-400">
-              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="h-8 w-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-label="Resources icon"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

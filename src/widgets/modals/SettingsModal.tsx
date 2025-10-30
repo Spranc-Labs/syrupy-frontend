@@ -22,9 +22,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
   return (
     <>
       {/* Backdrop */}
+      {/* biome-ignore lint/a11y/useSemanticElements: Backdrop overlay requires div with button role for proper layering */}
       <div
         className="fixed inset-0 z-40 bg-black bg-opacity-25 dark:bg-opacity-50"
         onClick={onClose}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' || e.key === 'Enter') {
+            onClose()
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label="Close modal"
       />
 
       {/* Modal */}
@@ -33,10 +42,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           <div className="mb-4 flex items-center justify-between">
             <h3 className="font-medium text-gray-900 text-lg dark:text-white">Settings</h3>
             <button
+              type="button"
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              aria-label="Close settings"
             >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-label="Close icon"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

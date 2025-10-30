@@ -29,8 +29,7 @@ export function BrowserTabsGrid({ tabs, onAddToReadingList }: BrowserTabsGridPro
 
       // Show success feedback
       alert('Added to reading list!')
-    } catch (error) {
-      console.error('Failed to add to reading list:', error)
+    } catch (_error) {
       alert('Failed to add to reading list. Please try again.')
     } finally {
       setAddingTabs((prev) => {
@@ -87,7 +86,7 @@ export function BrowserTabsGrid({ tabs, onAddToReadingList }: BrowserTabsGridPro
                   className="h-full w-full object-cover transition-transform group-hover:scale-105"
                   onError={(e) => {
                     // Hide image if it fails to load
-                    e.currentTarget.parentElement!.style.display = 'none'
+                    e.currentTarget.parentElement?.style.display = 'none'
                   }}
                 />
               </div>
@@ -113,13 +112,13 @@ export function BrowserTabsGrid({ tabs, onAddToReadingList }: BrowserTabsGridPro
                 )}
 
                 {/* Title */}
-                <h3 className="mb-2 font-medium text-gray-900 line-clamp-2 dark:text-white">
+                <h3 className="mb-2 line-clamp-2 font-medium text-gray-900 dark:text-white">
                   {displayTitle}
                 </h3>
 
                 {/* Description */}
                 {description && (
-                  <p className="mb-2 text-gray-600 text-sm line-clamp-2 dark:text-gray-400">
+                  <p className="mb-2 line-clamp-2 text-gray-600 text-sm dark:text-gray-400">
                     {description}
                   </p>
                 )}
@@ -129,7 +128,7 @@ export function BrowserTabsGrid({ tabs, onAddToReadingList }: BrowserTabsGridPro
                   href={tab.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block break-all text-indigo-600 text-sm line-clamp-1 hover:underline dark:text-indigo-400"
+                  className="line-clamp-1 block break-all text-indigo-600 text-sm hover:underline dark:text-indigo-400"
                 >
                   {tab.url}
                 </a>
@@ -148,7 +147,7 @@ export function BrowserTabsGrid({ tabs, onAddToReadingList }: BrowserTabsGridPro
                   type="button"
                   onClick={() => handleAddToReadingList(tab)}
                   disabled={isAdding}
-                  className="flex items-center space-x-1 rounded-md bg-indigo-600 px-3 py-1.5 font-medium text-white text-sm transition-colors hover:bg-indigo-700 disabled:opacity-50"
+                  className="flex items-center space-x-1 rounded-md bg-indigo-600 px-3 py-1.5 font-medium text-sm text-white transition-colors hover:bg-indigo-700 disabled:opacity-50"
                 >
                   {isAdding ? (
                     <>

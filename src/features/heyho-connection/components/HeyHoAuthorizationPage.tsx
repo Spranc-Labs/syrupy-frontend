@@ -66,20 +66,20 @@ export function HeyHoAuthorizationPage({
       setTimeout(() => {
         window.close()
       }, 1500)
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to authorize. Please try again.')
       setIsSubmitting(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-base-200 flex items-center justify-center p-4">
-      <Card className="max-w-md w-full">
+    <div className="flex min-h-screen items-center justify-center bg-base-200 p-4">
+      <Card className="w-full max-w-md">
         {success ? (
-          <div className="text-center py-8">
-            <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
+          <div className="py-8 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
               <svg
-                className="w-8 h-8 text-success"
+                className="h-8 w-8 text-success"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -92,21 +92,21 @@ export function HeyHoAuthorizationPage({
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-bold mb-2">Successfully Connected!</h2>
+            <h2 className="mb-2 font-bold text-xl">Successfully Connected!</h2>
             <p className="text-base-content/60">Your HeyHo account is now linked to Syrupy.</p>
           </div>
         ) : (
           <>
-            <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold mb-2">Authorize Syrupy</h1>
+            <div className="mb-6 text-center">
+              <h1 className="mb-2 font-bold text-2xl">Authorize Syrupy</h1>
               <p className="text-base-content/60">
                 Syrupy is requesting access to your HeyHo browsing data
               </p>
             </div>
 
-            <div className="bg-base-300 p-4 rounded-lg mb-6">
-              <h2 className="font-semibold mb-2">Requested Permissions:</h2>
-              <ul className="list-disc list-inside text-sm space-y-1">
+            <div className="mb-6 rounded-lg bg-base-300 p-4">
+              <h2 className="mb-2 font-semibold">Requested Permissions:</h2>
+              <ul className="list-inside list-disc space-y-1 text-sm">
                 <li>Read your browsing history</li>
                 <li>View browsing insights and patterns</li>
               </ul>
@@ -152,7 +152,7 @@ export function HeyHoAuthorizationPage({
               </div>
             </form>
 
-            <p className="text-xs text-center text-base-content/60 mt-4">
+            <p className="mt-4 text-center text-base-content/60 text-xs">
               By authorizing, you allow Syrupy to access your HeyHo data as described above.
             </p>
           </>

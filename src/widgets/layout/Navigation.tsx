@@ -69,6 +69,7 @@ export const Navigation: React.FC = () => {
 
               {/* Settings Button - Made more prominent */}
               <button
+                type="button"
                 onClick={() => {
                   console.log('Settings button clicked!') // Debug log
                   setIsSettingsOpen(true)
@@ -83,6 +84,7 @@ export const Navigation: React.FC = () => {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
+                  aria-label="Settings icon"
                 >
                   <path
                     strokeLinecap="round"
@@ -101,6 +103,7 @@ export const Navigation: React.FC = () => {
               </button>
 
               <button
+                type="button"
                 onClick={logout}
                 className="rounded-md bg-gray-100 px-3 py-2 font-medium text-gray-700 text-sm transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               >

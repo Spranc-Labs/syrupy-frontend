@@ -1,6 +1,6 @@
 import { type UseQueryOptions, useQuery } from '@tanstack/react-query'
 import { apiClient } from '@/shared/api'
-import type { BrowserTab, BrowsingSessionsResponse } from '../types'
+import type { BrowsingSessionsResponse } from '../types'
 import { browsingSessionKeys } from './keys'
 
 /**
