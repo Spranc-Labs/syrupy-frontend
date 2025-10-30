@@ -68,4 +68,7 @@ dist/
 .vite/
 
 # Storybook
-storybook-static/ 
+storybook-static/
+
+# TanStack Router
+.tanstack/ 

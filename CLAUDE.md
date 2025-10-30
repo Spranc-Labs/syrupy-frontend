@@ -1117,11 +1117,6 @@ npm run type-check      # Check TypeScript
 npm test               # Run tests
 npm run test:coverage  # Generate coverage
 
-# Generation
-npm run generate:component  # Generate UI component
-npm run generate:entity     # Generate entity with API
-npm run generate:route      # Generate route
-
 # Storybook
 npm run storybook           # Launch component docs
 ```
