@@ -86,7 +86,10 @@ export function BrowserTabsGrid({ tabs, onAddToReadingList }: BrowserTabsGridPro
                   className="h-full w-full object-cover transition-transform group-hover:scale-105"
                   onError={(e) => {
                     // Hide image if it fails to load
-                    e.currentTarget.parentElement?.style.display = 'none'
+                    const parent = e.currentTarget.parentElement
+                    if (parent) {
+                      parent.style.display = 'none'
+                    }
                   }}
                 />
               </div>
