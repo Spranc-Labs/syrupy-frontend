@@ -30,7 +30,7 @@ export const Dashboard: React.FC = () => {
         apiClient.get('/goals'),
         apiClient.get('/habits'),
         apiClient.get('/mood_logs'),
-        apiClient.get('/resources'),
+        apiClient.get('/bookmarks'),
       ])
 
       // Helper function to get count from different response formats
@@ -229,12 +229,12 @@ export const Dashboard: React.FC = () => {
         </Link>
 
         <Link
-          to="/resources"
+          to="/bookmarks"
           className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-600 text-sm dark:text-gray-400">Resources</p>
+              <p className="font-medium text-gray-600 text-sm dark:text-gray-400">Bookmarks</p>
               <p className="font-bold text-3xl text-blue-600 dark:text-blue-400">
                 {stats.resources}
               </p>
@@ -245,7 +245,7 @@ export const Dashboard: React.FC = () => {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                aria-label="Resources icon"
+                aria-label="Bookmarks icon"
               >
                 <path
                   strokeLinecap="round"
@@ -288,10 +288,10 @@ export const Dashboard: React.FC = () => {
             <span className="font-medium text-gray-700 dark:text-gray-300">Log Mood</span>
           </Link>
           <Link
-            to="/resources"
+            to="/bookmarks"
             className="flex items-center justify-center rounded-lg border border-gray-300 p-4 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
           >
-            <span className="font-medium text-gray-700 dark:text-gray-300">Add Resource</span>
+            <span className="font-medium text-gray-700 dark:text-gray-300">Add Bookmark</span>
           </Link>
         </div>
       </div>

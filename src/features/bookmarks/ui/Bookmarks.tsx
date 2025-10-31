@@ -2,12 +2,12 @@ import type React from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { apiClient } from '@/shared/api'
 
-interface ResourcesResponse {
-  items: Resource[]
+interface BookmarksResponse {
+  items: Bookmark[]
   total?: number
 }
 
-interface Resource {
+interface Bookmark {
   id: number
   url: string
   title?: string
@@ -25,38 +25,38 @@ interface Tag {
   color: string
 }
 
-export const Resources: React.FC = () => {
-  const [resources, setResources] = useState<Resource[]>([])
+export const Bookmarks: React.FC = () => {
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  const fetchResources = useCallback(async () => {
+  const fetchBookmarks = useCallback(async () => {
     try {
-      const response = await apiClient.get<ResourcesResponse>('/resources')
-      console.log('Resources API response:', response) // Debug log
+      const response = await apiClient.get<BookmarksResponse>('/bookmarks')
+      console.log('Bookmarks API response:', response) // Debug log
 
       // Handle different response formats like other endpoints
-      const resourcesData =
+      const bookmarksData =
         response.data?.items || (Array.isArray(response.data) ? response.data : [])
 
-      console.log('Processed resources data:', resourcesData) // Debug log
-      setResources(resourcesData)
+      console.log('Processed bookmarks data:', bookmarksData) // Debug log
+      setBookmarks(bookmarksData)
     } catch (_error) {
-      setResources([]) // Set empty array on error
+      setBookmarks([]) // Set empty array on error
     } finally {
       setIsLoading(false)
     }
   }, [])
 
   useEffect(() => {
-    fetchResources()
-  }, [fetchResources])
+    fetchBookmarks()
+  }, [fetchBookmarks])
 
-  const handleDeleteResource = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this resource?')) return
+  const handleDeleteBookmark = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this bookmark?')) return
 
     try {
-      await apiClient.delete(`/resources/${id}`)
-      setResources((prev) => prev.filter((resource) => resource.id !== id))
+      await apiClient.delete(`/bookmarks/${id}`)
+      setBookmarks((prev) => prev.filter((bookmark) => bookmark.id !== id))
     } catch (_error) {}
   }
 
@@ -90,7 +90,7 @@ export const Resources: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-base-100">
-        <div className="flex justify-center p-8 text-text-secondary">Loading resources...</div>
+        <div className="flex justify-center p-8 text-text-secondary">Loading bookmarks...</div>
       </div>
     )
   }
@@ -101,13 +101,13 @@ export const Resources: React.FC = () => {
         <div className="mb-6">
           <h1 className="mb-1 font-semibold text-2xl text-text-primary">All Bookmarks</h1>
           <p className="text-sm text-text-tertiary">
-            {resources.length} {resources.length === 1 ? 'bookmark' : 'bookmarks'}
+            {bookmarks.length} {bookmarks.length === 1 ? 'bookmark' : 'bookmarks'}
           </p>
         </div>
 
-        {/* Resource List */}
+        {/* Bookmark List */}
         <div className="space-y-3">
-          {resources.length === 0 ? (
+          {bookmarks.length === 0 ? (
             <div className="py-12 text-center">
               <div className="mb-4 text-text-quaternary">
                 <svg
@@ -129,37 +129,37 @@ export const Resources: React.FC = () => {
               <p className="text-text-secondary">Your bookmarks will appear here</p>
             </div>
           ) : (
-            resources
-              .map((resource) => {
-                // Safety check for malformed resource objects
-                if (!resource || !resource.id || !resource.url) {
+            bookmarks
+              .map((bookmark) => {
+                // Safety check for malformed bookmark objects
+                if (!bookmark || !bookmark.id || !bookmark.url) {
                   return null
                 }
 
                 return (
-                  <div key={resource.id} className="card">
+                  <div key={bookmark.id} className="card">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="mb-2 flex items-center space-x-2">
-                          {getStatusBadge(resource.status)}
-                          {resource.domain && (
-                            <span className="text-sm text-text-tertiary">{resource.domain}</span>
+                          {getStatusBadge(bookmark.status)}
+                          {bookmark.domain && (
+                            <span className="text-sm text-text-tertiary">{bookmark.domain}</span>
                           )}
                         </div>
                         <h3 className="mb-2 font-medium text-lg text-text-primary">
-                          {resource.title || 'Untitled'}
+                          {bookmark.title || 'Untitled'}
                         </h3>
                         <a
-                          href={resource.url}
+                          href={bookmark.url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="break-all text-primary hover:underline"
                         >
-                          {resource.url}
+                          {bookmark.url}
                         </a>
                         <div className="mt-3 flex items-center space-x-4 text-sm text-text-tertiary">
-                          <span>Added {new Date(resource.created_at).toLocaleDateString()}</span>
-                          {resource.has_content && (
+                          <span>Added {new Date(bookmark.created_at).toLocaleDateString()}</span>
+                          {bookmark.has_content && (
                             <span className="flex items-center">
                               <svg
                                 className="mr-1 h-4 w-4"
@@ -179,9 +179,9 @@ export const Resources: React.FC = () => {
                             </span>
                           )}
                         </div>
-                        {resource.tags && resource.tags.length > 0 && (
+                        {bookmark.tags && bookmark.tags.length > 0 && (
                           <div className="mt-3 flex flex-wrap gap-2">
-                            {resource.tags.map((tag) => (
+                            {bookmark.tags.map((tag) => (
                               <span
                                 key={tag.id}
                                 className="inline-flex items-center rounded-full px-2.5 py-0.5 font-medium text-xs"
@@ -196,9 +196,9 @@ export const Resources: React.FC = () => {
                       <div className="ml-4">
                         <button
                           type="button"
-                          onClick={() => handleDeleteResource(resource.id)}
+                          onClick={() => handleDeleteBookmark(bookmark.id)}
                           className="text-text-quaternary transition-colors hover:text-error"
-                          aria-label="Delete resource"
+                          aria-label="Delete bookmark"
                         >
                           <svg
                             className="h-5 w-5"

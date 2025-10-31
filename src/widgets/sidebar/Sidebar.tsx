@@ -19,7 +19,7 @@ export function Sidebar() {
   const { data: linkStatus, isLoading: isLoadingLinkStatus } = useAccountLinkStatus()
 
   const isActive = (path: string) => location.pathname === path
-  const isResourcesPage = location.pathname.startsWith('/resources')
+  const isBookmarksPage = location.pathname.startsWith('/bookmarks')
 
   // Show collapsed view when sidebar is collapsed
   if (isCollapsed) {
@@ -97,31 +97,31 @@ export function Sidebar() {
             isResizing && 'pointer-events-none select-none'
           )}
         >
-          {isResourcesPage ? (
+          {isBookmarksPage ? (
             <>
               {/* Primary Navigation */}
               <SidebarSection>
                 <SidebarItem
                   label="All bookmarks"
                   count={counts.all}
-                  path="/resources"
-                  isActive={isActive('/resources')}
+                  path="/bookmarks"
+                  isActive={isActive('/bookmarks')}
                 />
                 <SidebarItem
                   label="Unsorted"
                   count={counts.unsorted}
-                  path="/resources/unsorted"
-                  isActive={isActive('/resources/unsorted')}
+                  path="/bookmarks/unsorted"
+                  isActive={isActive('/bookmarks/unsorted')}
                 />
                 <SidebarItem
                   label="Search"
-                  path="/resources/search"
-                  isActive={isActive('/resources/search')}
+                  path="/bookmarks/search"
+                  isActive={isActive('/bookmarks/search')}
                 />
                 <SidebarItem
                   label="Trash"
-                  path="/resources/trash"
-                  isActive={isActive('/resources/trash')}
+                  path="/bookmarks/trash"
+                  isActive={isActive('/bookmarks/trash')}
                 />
               </SidebarSection>
 
@@ -131,20 +131,20 @@ export function Sidebar() {
                   <SidebarItem
                     label="Hoarder Tabs"
                     count={counts.hoarderTabs}
-                    path="/resources/hoarder-tabs"
-                    isActive={isActive('/resources/hoarder-tabs')}
+                    path="/bookmarks/hoarder-tabs"
+                    isActive={isActive('/bookmarks/hoarder-tabs')}
                   />
                   <SidebarItem
                     label="Pinned"
                     count={counts.pinned}
-                    path="/resources/pinned"
-                    isActive={isActive('/resources/pinned')}
+                    path="/bookmarks/pinned"
+                    isActive={isActive('/bookmarks/pinned')}
                   />
                   <SidebarItem
                     label="Serial Openers"
                     count={counts.serialOpeners}
-                    path="/resources/serial-openers"
-                    isActive={isActive('/resources/serial-openers')}
+                    path="/bookmarks/serial-openers"
+                    isActive={isActive('/bookmarks/serial-openers')}
                   />
                 </SidebarSection>
               )}
@@ -154,20 +154,20 @@ export function Sidebar() {
                 <SidebarItem
                   label="System Design"
                   count={counts.systemDesign}
-                  path="/resources/collection/system-design"
-                  isActive={isActive('/resources/collection/system-design')}
+                  path="/bookmarks/collection/system-design"
+                  isActive={isActive('/bookmarks/collection/system-design')}
                 />
                 <SidebarItem
                   label="Software Development"
                   count={counts.softwareDev}
-                  path="/resources/collection/software-development"
-                  isActive={isActive('/resources/collection/software-development')}
+                  path="/bookmarks/collection/software-development"
+                  isActive={isActive('/bookmarks/collection/software-development')}
                 />
                 <SidebarItem
                   label="Daily Reads"
                   count={counts.dailyReads}
-                  path="/resources/collection/daily-reads"
-                  isActive={isActive('/resources/collection/daily-reads')}
+                  path="/bookmarks/collection/daily-reads"
+                  isActive={isActive('/bookmarks/collection/daily-reads')}
                 />
               </SidebarSection>
             </>

@@ -1,7 +1,7 @@
 import type React from 'react'
 import { useAccountLinkStatus } from '@/entities/account-link'
 import { useBrowsingSessions } from '@/entities/browsing-session'
-import { ResourcesList } from '@/features/resource-library/components/ResourcesList'
+import { BookmarksList } from '@/features/bookmarks/components/BookmarksList'
 
 export const HoarderTabs: React.FC = () => {
   // Check HeyHo account link status
@@ -77,7 +77,7 @@ export const HoarderTabs: React.FC = () => {
             </div>
           </div>
         ) : (
-          <ResourcesList items={allBrowserTabs} />
+          <BookmarksList items={allBrowserTabs} />
         )
       ) : (
         <div className="mx-auto max-w-7xl px-4">

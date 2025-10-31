@@ -19,7 +19,7 @@ export function NavigationPanel() {
     { name: 'Goals', path: '/goals' },
     { name: 'Habits', path: '/habits' },
     { name: 'Mood', path: '/mood' },
-    { name: 'Resources', path: '/resources' },
+    { name: 'Bookmarks', path: '/bookmarks' },
   ]
 
   if (!isOpen) return null
