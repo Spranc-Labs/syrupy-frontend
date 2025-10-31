@@ -61,33 +61,6 @@ export const Bookmarks: React.FC = () => {
     } catch (_error) {}
   }
 
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      pending: {
-        color: 'bg-warning/10 text-warning',
-        text: 'Pending',
-      },
-      processed: {
-        color: 'bg-success/10 text-success',
-        text: 'Processed',
-      },
-      failed: {
-        color: 'bg-error/10 text-error',
-        text: 'Failed',
-      },
-    }
-
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending
-
-    return (
-      <span
-        className={`inline-flex items-center rounded-full px-2.5 py-0.5 font-medium text-xs ${config.color}`}
-      >
-        {config.text}
-      </span>
-    )
-  }
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-base-100">
@@ -128,15 +101,14 @@ export const Bookmarks: React.FC = () => {
                   <div key={bookmark.id} className="card">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="mb-2 flex items-center space-x-2">
-                          {getStatusBadge(bookmark.status)}
-                          {bookmark.domain && (
-                            <span className="text-sm text-text-tertiary">{bookmark.domain}</span>
-                          )}
-                        </div>
                         <h3 className="mb-2 font-medium text-lg text-text-primary">
                           {bookmark.title || 'Untitled'}
                         </h3>
+                        {bookmark.domain && (
+                          <span className="mb-2 block text-sm text-text-tertiary">
+                            {bookmark.domain}
+                          </span>
+                        )}
                         <a
                           href={bookmark.url}
                           target="_blank"
