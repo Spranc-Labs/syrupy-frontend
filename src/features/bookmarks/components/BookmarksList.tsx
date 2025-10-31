@@ -1,3 +1,4 @@
+import { Copy, ExternalLink } from 'lucide-react'
 import type React from 'react'
 import type { BrowserTab } from '@/entities/browsing-session'
 import { ThumbnailImage } from './ThumbnailImage'
@@ -47,14 +48,7 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({ items, onAction })
                   className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
                   aria-label="Copy link"
                 >
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                    />
-                  </svg>
+                  <Copy className="h-4 w-4" />
                 </button>
               )}
               <a
@@ -64,14 +58,7 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({ items, onAction })
                 className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
                 aria-label="Open link"
               >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
+                <ExternalLink className="h-4 w-4" />
               </a>
             </div>
           </div>

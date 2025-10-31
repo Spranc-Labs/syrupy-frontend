@@ -1,3 +1,4 @@
+import { Monitor } from 'lucide-react'
 import type React from 'react'
 import { useAccountLinkStatus } from '@/entities/account-link'
 import { useBrowsingSessions } from '@/entities/browsing-session'
@@ -56,21 +57,8 @@ export const HoarderTabs: React.FC = () => {
         ) : allBrowserTabs.length === 0 ? (
           <div className="mx-auto max-w-7xl px-4">
             <div className="py-12 text-center">
-              <div className="mb-4 text-text-quaternary">
-                <svg
-                  className="mx-auto h-16 w-16"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-label="Empty state icon"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
+              <div className="mb-4 flex justify-center text-text-quaternary">
+                <Monitor className="h-16 w-16" />
               </div>
               <h3 className="mb-2 font-medium text-lg text-text-primary">No tabs found</h3>
               <p className="text-text-secondary">Your synced browser tabs will appear here</p>
