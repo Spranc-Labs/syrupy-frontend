@@ -1,15 +1,28 @@
 import type React from 'react'
-import { Navigation } from './Navigation'
+import { cn } from '@/shared/lib'
+import { useSidebarStore } from '@/stores/useSidebarStore'
+import { Sidebar } from '../sidebar'
 
 interface LayoutProps {
   children: React.ReactNode
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const { width, isResizing } = useSidebarStore()
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Navigation />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+    <div className="min-h-screen bg-base-100">
+      <Sidebar />
+      <main
+        className={cn(
+          'min-h-screen bg-base-100',
+          !isResizing && 'transition-all duration-300',
+          isResizing && 'pointer-events-none select-none'
+        )}
+        style={{ marginLeft: `${width}px` }}
+      >
+        {children}
+      </main>
     </div>
   )
 }

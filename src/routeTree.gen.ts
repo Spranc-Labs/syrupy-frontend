@@ -13,13 +13,15 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedResourcesRouteImport } from './routes/_authenticated/resources'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedMoodRouteImport } from './routes/_authenticated/mood'
 import { Route as AuthenticatedJournalRouteImport } from './routes/_authenticated/journal'
 import { Route as AuthenticatedHabitsRouteImport } from './routes/_authenticated/habits'
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedResourcesIndexRouteImport } from './routes/_authenticated/resources/index'
 import { Route as AuthHeyhoAuthorizeRouteImport } from './routes/auth/heyho/authorize'
+import { Route as AuthenticatedResourcesCategoryRouteImport } from './routes/_authenticated/resources/$category'
 import { Route as AuthenticatedJournalNewRouteImport } from './routes/_authenticated/journal.new'
 import { Route as AuthenticatedJournalIdEditRouteImport } from './routes/_authenticated/journal.$id.edit'
 
@@ -42,9 +44,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedResourcesRoute = AuthenticatedResourcesRouteImport.update({
-  id: '/resources',
-  path: '/resources',
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedMoodRoute = AuthenticatedMoodRouteImport.update({
@@ -72,11 +74,23 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedResourcesIndexRoute =
+  AuthenticatedResourcesIndexRouteImport.update({
+    id: '/resources/',
+    path: '/resources/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthHeyhoAuthorizeRoute = AuthHeyhoAuthorizeRouteImport.update({
   id: '/auth/heyho/authorize',
   path: '/auth/heyho/authorize',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedResourcesCategoryRoute =
+  AuthenticatedResourcesCategoryRouteImport.update({
+    id: '/resources/$category',
+    path: '/resources/$category',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedJournalNewRoute = AuthenticatedJournalNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -98,9 +112,11 @@ export interface FileRoutesByFullPath {
   '/habits': typeof AuthenticatedHabitsRoute
   '/journal': typeof AuthenticatedJournalRouteWithChildren
   '/mood': typeof AuthenticatedMoodRoute
-  '/resources': typeof AuthenticatedResourcesRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/journal/new': typeof AuthenticatedJournalNewRoute
+  '/resources/$category': typeof AuthenticatedResourcesCategoryRoute
   '/auth/heyho/authorize': typeof AuthHeyhoAuthorizeRoute
+  '/resources': typeof AuthenticatedResourcesIndexRoute
   '/journal/$id/edit': typeof AuthenticatedJournalIdEditRoute
 }
 export interface FileRoutesByTo {
@@ -112,9 +128,11 @@ export interface FileRoutesByTo {
   '/habits': typeof AuthenticatedHabitsRoute
   '/journal': typeof AuthenticatedJournalRouteWithChildren
   '/mood': typeof AuthenticatedMoodRoute
-  '/resources': typeof AuthenticatedResourcesRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/journal/new': typeof AuthenticatedJournalNewRoute
+  '/resources/$category': typeof AuthenticatedResourcesCategoryRoute
   '/auth/heyho/authorize': typeof AuthHeyhoAuthorizeRoute
+  '/resources': typeof AuthenticatedResourcesIndexRoute
   '/journal/$id/edit': typeof AuthenticatedJournalIdEditRoute
 }
 export interface FileRoutesById {
@@ -128,9 +146,11 @@ export interface FileRoutesById {
   '/_authenticated/habits': typeof AuthenticatedHabitsRoute
   '/_authenticated/journal': typeof AuthenticatedJournalRouteWithChildren
   '/_authenticated/mood': typeof AuthenticatedMoodRoute
-  '/_authenticated/resources': typeof AuthenticatedResourcesRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/journal/new': typeof AuthenticatedJournalNewRoute
+  '/_authenticated/resources/$category': typeof AuthenticatedResourcesCategoryRoute
   '/auth/heyho/authorize': typeof AuthHeyhoAuthorizeRoute
+  '/_authenticated/resources/': typeof AuthenticatedResourcesIndexRoute
   '/_authenticated/journal/$id/edit': typeof AuthenticatedJournalIdEditRoute
 }
 export interface FileRouteTypes {
@@ -144,9 +164,11 @@ export interface FileRouteTypes {
     | '/habits'
     | '/journal'
     | '/mood'
-    | '/resources'
+    | '/settings'
     | '/journal/new'
+    | '/resources/$category'
     | '/auth/heyho/authorize'
+    | '/resources'
     | '/journal/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -158,9 +180,11 @@ export interface FileRouteTypes {
     | '/habits'
     | '/journal'
     | '/mood'
-    | '/resources'
+    | '/settings'
     | '/journal/new'
+    | '/resources/$category'
     | '/auth/heyho/authorize'
+    | '/resources'
     | '/journal/$id/edit'
   id:
     | '__root__'
@@ -173,9 +197,11 @@ export interface FileRouteTypes {
     | '/_authenticated/habits'
     | '/_authenticated/journal'
     | '/_authenticated/mood'
-    | '/_authenticated/resources'
+    | '/_authenticated/settings'
     | '/_authenticated/journal/new'
+    | '/_authenticated/resources/$category'
     | '/auth/heyho/authorize'
+    | '/_authenticated/resources/'
     | '/_authenticated/journal/$id/edit'
   fileRoutesById: FileRoutesById
 }
@@ -217,11 +243,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/resources': {
-      id: '/_authenticated/resources'
-      path: '/resources'
-      fullPath: '/resources'
-      preLoaderRoute: typeof AuthenticatedResourcesRouteImport
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/mood': {
@@ -259,12 +285,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/resources/': {
+      id: '/_authenticated/resources/'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof AuthenticatedResourcesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/auth/heyho/authorize': {
       id: '/auth/heyho/authorize'
       path: '/auth/heyho/authorize'
       fullPath: '/auth/heyho/authorize'
       preLoaderRoute: typeof AuthHeyhoAuthorizeRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/resources/$category': {
+      id: '/_authenticated/resources/$category'
+      path: '/resources/$category'
+      fullPath: '/resources/$category'
+      preLoaderRoute: typeof AuthenticatedResourcesCategoryRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/journal/new': {
       id: '/_authenticated/journal/new'
@@ -302,7 +342,9 @@ interface AuthenticatedRouteChildren {
   AuthenticatedHabitsRoute: typeof AuthenticatedHabitsRoute
   AuthenticatedJournalRoute: typeof AuthenticatedJournalRouteWithChildren
   AuthenticatedMoodRoute: typeof AuthenticatedMoodRoute
-  AuthenticatedResourcesRoute: typeof AuthenticatedResourcesRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedResourcesCategoryRoute: typeof AuthenticatedResourcesCategoryRoute
+  AuthenticatedResourcesIndexRoute: typeof AuthenticatedResourcesIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -311,7 +353,9 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedHabitsRoute: AuthenticatedHabitsRoute,
   AuthenticatedJournalRoute: AuthenticatedJournalRouteWithChildren,
   AuthenticatedMoodRoute: AuthenticatedMoodRoute,
-  AuthenticatedResourcesRoute: AuthenticatedResourcesRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedResourcesCategoryRoute: AuthenticatedResourcesCategoryRoute,
+  AuthenticatedResourcesIndexRoute: AuthenticatedResourcesIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

@@ -5,3 +5,6 @@ export { Navigation } from './layout/Navigation'
 export { FullscreenSpinner, Spinner } from './loading/Spinner'
 // Modal widgets
 export { SettingsModal } from './modals/SettingsModal'
+export type { SidebarItemProps, SidebarSectionProps } from './sidebar'
+// Sidebar widgets
+export { Sidebar, SidebarItem, SidebarSection } from './sidebar'
