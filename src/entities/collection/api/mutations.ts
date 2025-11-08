@@ -1,21 +1,29 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '@/shared/api/client'
-import type { CollectionFormData, CollectionResponse } from '../types'
+import type { Collection, CollectionFormData } from '../types'
 import { collectionKeys } from './keys'
 
-async function createCollection(data: CollectionFormData): Promise<CollectionResponse> {
-  return apiClient.post('/collections', { collection: data })
+async function createCollection(data: CollectionFormData): Promise<Collection> {
+  const response = await apiClient.post<Collection>('/collections', { collection: data })
+  if (!response.data) {
+    throw new Error('No collection data returned')
+  }
+  return response.data
 }
 
 async function updateCollection(
   id: number,
   data: Partial<CollectionFormData>
-): Promise<CollectionResponse> {
-  return apiClient.patch(`/collections/${id}`, { collection: data })
+): Promise<Collection> {
+  const response = await apiClient.patch<Collection>(`/collections/${id}`, { collection: data })
+  if (!response.data) {
+    throw new Error('No collection data returned')
+  }
+  return response.data
 }
 
 async function deleteCollection(id: number): Promise<void> {
-  return apiClient.delete(`/collections/${id}`)
+  await apiClient.delete(`/collections/${id}`)
 }
 
 export function useCreateCollection() {

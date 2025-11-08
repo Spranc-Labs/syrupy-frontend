@@ -159,12 +159,8 @@ export function Sidebar() {
                   collections.map((collection) => (
                     <SidebarItem
                       key={collection.id}
-                      label={
-                        <span className="flex items-center gap-2">
-                          {collection.icon && <span>{collection.icon}</span>}
-                          <span>{collection.name}</span>
-                        </span>
-                      }
+                      label={collection.name}
+                      icon={collection.icon ? <span>{collection.icon}</span> : undefined}
                       count={collection.bookmarks_count}
                       path={`/bookmarks/collection/${collection.id}`}
                       isActive={isActive(`/bookmarks/collection/${collection.id}`)}
