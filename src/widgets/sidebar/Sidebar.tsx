@@ -1,6 +1,7 @@
 import { useRouterState } from '@tanstack/react-router'
 import { useAuth } from '@/app/providers'
 import { useAccountLinkStatus } from '@/entities/account-link'
+import { useCollections } from '@/entities/collection'
 import { cn } from '@/shared/lib'
 import { useNavigationStore } from '@/stores/useNavigationStore'
 import { useSidebarStore } from '@/stores/useSidebarStore'
@@ -17,6 +18,7 @@ export function Sidebar() {
   const { toggle } = useNavigationStore()
   const { width, isCollapsed, isResizing } = useSidebarStore()
   const { data: linkStatus, isLoading: isLoadingLinkStatus } = useAccountLinkStatus()
+  const { data: collections, isLoading: isLoadingCollections } = useCollections()
 
   const isActive = (path: string) => location.pathname === path
   const isBookmarksPage = location.pathname.startsWith('/bookmarks')
@@ -151,24 +153,26 @@ export function Sidebar() {
 
               {/* Collections */}
               <SidebarSection title="Collections">
-                <SidebarItem
-                  label="System Design"
-                  count={counts.systemDesign}
-                  path="/bookmarks/collection/system-design"
-                  isActive={isActive('/bookmarks/collection/system-design')}
-                />
-                <SidebarItem
-                  label="Software Development"
-                  count={counts.softwareDev}
-                  path="/bookmarks/collection/software-development"
-                  isActive={isActive('/bookmarks/collection/software-development')}
-                />
-                <SidebarItem
-                  label="Daily Reads"
-                  count={counts.dailyReads}
-                  path="/bookmarks/collection/daily-reads"
-                  isActive={isActive('/bookmarks/collection/daily-reads')}
-                />
+                {isLoadingCollections ? (
+                  <div className="px-4 py-2 text-sm text-text-tertiary">Loading collections...</div>
+                ) : collections && collections.length > 0 ? (
+                  collections.map((collection) => (
+                    <SidebarItem
+                      key={collection.id}
+                      label={
+                        <span className="flex items-center gap-2">
+                          {collection.icon && <span>{collection.icon}</span>}
+                          <span>{collection.name}</span>
+                        </span>
+                      }
+                      count={collection.bookmarks_count}
+                      path={`/bookmarks/collection/${collection.id}`}
+                      isActive={isActive(`/bookmarks/collection/${collection.id}`)}
+                    />
+                  ))
+                ) : (
+                  <div className="px-4 py-2 text-sm text-text-tertiary">No collections yet</div>
+                )}
               </SidebarSection>
             </>
           ) : (

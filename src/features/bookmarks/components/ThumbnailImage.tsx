@@ -13,7 +13,7 @@ export const ThumbnailImage: React.FC<ThumbnailImageProps> = ({ item }) => {
 
   const showFavicon = (!item.preview?.image || imageError) && item.preview?.favicon && !faviconError
   const showPlaceholder =
-    !item.preview?.image || (imageError && (!item.preview?.favicon || faviconError))
+    (!item.preview?.image || imageError) && (!item.preview?.favicon || faviconError)
 
   return (
     <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-base-300">
