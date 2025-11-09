@@ -1,5 +1,4 @@
 import { RotateCcw, Trash2, X } from 'lucide-react'
-import type React from 'react'
 import { useCallback } from 'react'
 import { useDeleteBookmark, useRestoreBookmark, useTrashBookmarks } from '@/entities/bookmark'
 import type { BrowserTab } from '@/entities/browsing-session'
@@ -40,7 +39,7 @@ function mapBookmarkToBrowserTab(bookmark: {
   }
 }
 
-export const Trash: React.FC = () => {
+export function Trash() {
   // Use TanStack Query hooks for data fetching
   const { data: trashData = [], isLoading, error } = useTrashBookmarks()
   const restoreBookmark = useRestoreBookmark()
@@ -53,8 +52,8 @@ export const Trash: React.FC = () => {
     async (item: BrowserTab) => {
       try {
         await restoreBookmark.mutateAsync(item.id)
-      } catch (err) {
-        console.error('Failed to restore bookmark:', err)
+      } catch (_err) {
+        // TODO: Show error toast notification
       }
     },
     [restoreBookmark]
@@ -64,15 +63,14 @@ export const Trash: React.FC = () => {
     async (item: BrowserTab) => {
       try {
         await deleteBookmark.mutateAsync(item.id)
-      } catch (err) {
-        console.error('Failed to permanently delete bookmark:', err)
+      } catch (_err) {
+        // TODO: Show error toast notification
       }
     },
     [deleteBookmark]
   )
 
-  const handlePreview = useCallback((item: BrowserTab) => {
-    console.log('Preview bookmark:', item)
+  const handlePreview = useCallback((_item: BrowserTab) => {
     // TODO: Implement preview modal
   }, [])
 

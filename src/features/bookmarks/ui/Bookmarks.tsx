@@ -1,5 +1,4 @@
 import { Bookmark } from 'lucide-react'
-import type React from 'react'
 import { useCallback } from 'react'
 import { useBookmarks, useDeleteBookmark } from '@/entities/bookmark'
 import type { BrowserTab } from '@/entities/browsing-session'
@@ -20,16 +19,6 @@ interface BookmarkResponse {
   tags?: Array<{ id: number; name: string; color: string }>
   created_at: string
   updated_at: string
-}
-
-interface BookmarksApiResponse {
-  success: boolean
-  data: BookmarkResponse[]
-  pagination?: {
-    current_page: number
-    per_page: number
-    total: number
-  }
 }
 
 // Helper to extract domain from URL
@@ -58,7 +47,7 @@ function mapBookmarkToBrowserTab(bookmark: BookmarkResponse): BrowserTab {
   }
 }
 
-export const Bookmarks: React.FC = () => {
+export function Bookmarks() {
   // Use TanStack Query hooks for data fetching
   const { data: bookmarksData = [], isLoading, error } = useBookmarks({ per_page: 1000 })
   const deleteBookmark = useDeleteBookmark()
@@ -66,13 +55,11 @@ export const Bookmarks: React.FC = () => {
   // Map bookmarks to BrowserTab format
   const bookmarks = bookmarksData.map(mapBookmarkToBrowserTab)
 
-  const handlePreview = useCallback((item: BrowserTab) => {
-    console.log('Preview bookmark:', item)
+  const handlePreview = useCallback((_item: BrowserTab) => {
     // TODO: Implement preview modal
   }, [])
 
-  const handleEdit = useCallback((item: BrowserTab) => {
-    console.log('Edit bookmark:', item)
+  const handleEdit = useCallback((_item: BrowserTab) => {
     // TODO: Implement edit modal
   }, [])
 
@@ -80,8 +67,8 @@ export const Bookmarks: React.FC = () => {
     async (item: BrowserTab) => {
       try {
         await deleteBookmark.mutateAsync(item.id)
-      } catch (err) {
-        console.error('Failed to delete bookmark:', err)
+      } catch (_err) {
+        // TODO: Show error toast notification
       }
     },
     [deleteBookmark]
