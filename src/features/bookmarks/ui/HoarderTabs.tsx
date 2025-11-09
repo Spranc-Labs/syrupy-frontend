@@ -1,4 +1,5 @@
 import { Monitor } from 'lucide-react'
+import { useCallback } from 'react'
 import type { BrowserTab } from '@/entities/browsing-session'
 import { useHoarderTabs } from '@/entities/hoarder-tab'
 import { BookmarksList } from '@/features/bookmarks/components/BookmarksList'
@@ -24,6 +25,19 @@ export function HoarderTabs() {
         favicon: tab.favicon_url,
       },
     })) || []
+
+  // Action handlers (placeholder implementations)
+  const handlePreview = useCallback((_item: BrowserTab) => {
+    // TODO: Implement preview modal
+  }, [])
+
+  const handleEdit = useCallback((_item: BrowserTab) => {
+    // TODO: Implement edit modal
+  }, [])
+
+  const handleDelete = useCallback((_item: BrowserTab) => {
+    // TODO: Implement dismiss/remove from hoarder tabs list
+  }, [])
 
   if (isLoading) {
     return (
@@ -65,7 +79,12 @@ export function HoarderTabs() {
           </div>
         </div>
       ) : (
-        <BookmarksList items={browserTabs} />
+        <BookmarksList
+          items={browserTabs}
+          onPreview={handlePreview}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   )
