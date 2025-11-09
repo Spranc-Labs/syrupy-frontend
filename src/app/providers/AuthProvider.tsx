@@ -68,19 +68,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<void> => {
     setIsLoading(true)
     try {
-      const data = await apiClient.post('/auth/login', { email, password })
+      const response = await apiClient.post('/auth/login', { email, password })
 
-      if (!data.success) {
-        throw new Error(data.message || 'Login failed')
+      // Handle new response format: { data: { AccessToken, RefreshToken, IdToken, ... } }
+      if (response.data) {
+        const { AccessToken, RefreshToken } = response.data
+        if (AccessToken && RefreshToken) {
+          tokenStorage.setTokens(AccessToken, RefreshToken)
+          console.log('Login successful, tokens stored')
+
+          // Fetch user data after successful login
+          const userData = await apiClient.get('/auth/me')
+          if (userData.success && userData.user) {
+            setUser(userData.user)
+          }
+        } else {
+          throw new Error('Missing tokens in response')
+        }
+      } else {
+        throw new Error('Invalid response format')
       }
-
-      // Store tokens
-      if (data.access_token && data.refresh_token) {
-        tokenStorage.setTokens(data.access_token, data.refresh_token)
-        console.log('Login successful, tokens stored for user:', data.user?.email)
-      }
-
-      setUser(data.user)
     } finally {
       setIsLoading(false)
     }
