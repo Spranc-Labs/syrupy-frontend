@@ -1,6 +1,5 @@
 import { useRouterState } from '@tanstack/react-router'
 import { useAuth } from '@/app/providers'
-import { useAccountLinkStatus } from '@/entities/account-link'
 import { useCollections } from '@/entities/collection'
 import { cn } from '@/shared/lib'
 import { useNavigationStore } from '@/stores/useNavigationStore'
@@ -17,7 +16,6 @@ export function Sidebar() {
   const { user } = useAuth()
   const { toggle } = useNavigationStore()
   const { width, isCollapsed, isResizing } = useSidebarStore()
-  const { data: linkStatus, isLoading: isLoadingLinkStatus } = useAccountLinkStatus()
   const { data: collections, isLoading: isLoadingCollections } = useCollections()
 
   const isActive = (path: string) => location.pathname === path
@@ -104,16 +102,10 @@ export function Sidebar() {
               {/* Primary Navigation */}
               <SidebarSection>
                 <SidebarItem
-                  label="All bookmarks"
+                  label="Unsorted"
                   count={counts.all}
                   path="/bookmarks"
                   isActive={isActive('/bookmarks')}
-                />
-                <SidebarItem
-                  label="Unsorted"
-                  count={counts.unsorted}
-                  path="/bookmarks/unsorted"
-                  isActive={isActive('/bookmarks/unsorted')}
                 />
                 <SidebarItem
                   label="Search"
@@ -127,29 +119,27 @@ export function Sidebar() {
                 />
               </SidebarSection>
 
-              {/* Smart Links - Only show when HeyHo account is linked */}
-              {!isLoadingLinkStatus && linkStatus?.linked === true && (
-                <SidebarSection title="Smart Links">
-                  <SidebarItem
-                    label="Hoarder Tabs"
-                    count={counts.hoarderTabs}
-                    path="/bookmarks/hoarder-tabs"
-                    isActive={isActive('/bookmarks/hoarder-tabs')}
-                  />
-                  <SidebarItem
-                    label="Pinned"
-                    count={counts.pinned}
-                    path="/bookmarks/pinned"
-                    isActive={isActive('/bookmarks/pinned')}
-                  />
-                  <SidebarItem
-                    label="Serial Openers"
-                    count={counts.serialOpeners}
-                    path="/bookmarks/serial-openers"
-                    isActive={isActive('/bookmarks/serial-openers')}
-                  />
-                </SidebarSection>
-              )}
+              {/* Smart Links */}
+              <SidebarSection title="Smart Links">
+                <SidebarItem
+                  label="Hoarder Tabs"
+                  count={counts.hoarderTabs}
+                  path="/bookmarks/hoarder-tabs"
+                  isActive={isActive('/bookmarks/hoarder-tabs')}
+                />
+                <SidebarItem
+                  label="Pinned"
+                  count={counts.pinned}
+                  path="/bookmarks/pinned"
+                  isActive={isActive('/bookmarks/pinned')}
+                />
+                <SidebarItem
+                  label="Serial Openers"
+                  count={counts.serialOpeners}
+                  path="/bookmarks/serial-openers"
+                  isActive={isActive('/bookmarks/serial-openers')}
+                />
+              </SidebarSection>
 
               {/* Collections */}
               <SidebarSection title="Collections">

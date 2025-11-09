@@ -1,22 +1,49 @@
-import { Copy, ExternalLink } from 'lucide-react'
+import { Eye, Pencil, Trash2 } from 'lucide-react'
 import type React from 'react'
 import type { BrowserTab } from '@/entities/browsing-session'
 import { ThumbnailImage } from './ThumbnailImage'
 
 interface BookmarksListProps {
   items: BrowserTab[]
-  onAction?: (item: BrowserTab) => void
+  onPreview?: (item: BrowserTab) => void
+  onEdit?: (item: BrowserTab) => void
+  onDelete?: (item: BrowserTab) => void
+  editIcon?: React.ReactNode
+  editLabel?: string
+  deleteIcon?: React.ReactNode
+  deleteLabel?: string
 }
 
-export const BookmarksList: React.FC<BookmarksListProps> = ({ items, onAction }) => {
+export const BookmarksList: React.FC<BookmarksListProps> = ({
+  items,
+  onPreview,
+  onEdit,
+  onDelete,
+  editIcon = <Pencil className="h-4 w-4" />,
+  editLabel = 'Edit bookmark',
+  deleteIcon = <Trash2 className="h-4 w-4" />,
+  deleteLabel = 'Delete bookmark',
+}) => {
   if (items.length === 0) {
     return null
+  }
+
+  const handleCardClick = (item: BrowserTab, e: React.MouseEvent) => {
+    // Don't navigate if clicking on action buttons
+    if ((e.target as HTMLElement).closest('button')) {
+      return
+    }
+    window.open(item.url, '_blank', 'noopener,noreferrer')
   }
 
   return (
     <div className="divide-y divide-base-300">
       {items.map((item) => (
-        <div key={item.id} className="group bg-base-100 transition-colors hover:bg-base-200">
+        <div
+          key={item.id}
+          className="group cursor-pointer bg-base-100 transition-colors hover:bg-base-200"
+          onClick={(e) => handleCardClick(item, e)}
+        >
           <div className="mx-auto flex max-w-7xl items-start gap-4 px-6 py-4">
             <ThumbnailImage item={item} />
 
@@ -39,27 +66,47 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({ items, onAction })
               )}
             </div>
 
-            {/* Action Button */}
-            <div className="flex flex-shrink-0 items-center gap-2">
-              {onAction && (
+            {/* Action Buttons - Only visible on hover */}
+            <div className="flex flex-shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+              {onPreview && (
                 <button
                   type="button"
-                  onClick={() => onAction(item)}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onPreview(item)
+                  }}
                   className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
-                  aria-label="Copy link"
+                  aria-label="Preview bookmark"
                 >
-                  <Copy className="h-4 w-4" />
+                  <Eye className="h-4 w-4" />
                 </button>
               )}
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
-                aria-label="Open link"
-              >
-                <ExternalLink className="h-4 w-4" />
-              </a>
+              {onEdit && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onEdit(item)
+                  }}
+                  className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
+                  aria-label={editLabel}
+                >
+                  {editIcon}
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onDelete(item)
+                  }}
+                  className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-error"
+                  aria-label={deleteLabel}
+                >
+                  {deleteIcon}
+                </button>
+              )}
             </div>
           </div>
         </div>
