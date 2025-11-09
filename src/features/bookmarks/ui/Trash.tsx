@@ -1,5 +1,4 @@
 import { RotateCcw, Trash2, X } from 'lucide-react'
-import type React from 'react'
 import { useCallback } from 'react'
 import { useDeleteBookmark, useRestoreBookmark, useTrashBookmarks } from '@/entities/bookmark'
 import type { BrowserTab } from '@/entities/browsing-session'
@@ -40,7 +39,7 @@ function mapBookmarkToBrowserTab(bookmark: {
   }
 }
 
-export const Trash: React.FC = () => {
+export function Trash() {
   // Use TanStack Query hooks for data fetching
   const { data: trashData = [], isLoading, error } = useTrashBookmarks()
   const restoreBookmark = useRestoreBookmark()

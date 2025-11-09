@@ -36,13 +36,25 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({
     window.open(item.url, '_blank', 'noopener,noreferrer')
   }
 
+  const handleKeyDown = (item: BrowserTab, e: React.KeyboardEvent) => {
+    // Activate on Enter or Space key
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      window.open(item.url, '_blank', 'noopener,noreferrer')
+    }
+  }
+
   return (
     <div className="divide-y divide-base-300">
       {items.map((item) => (
+        // biome-ignore lint/a11y/useSemanticElements: Card container with nested action buttons requires div with role="button"
         <div
           key={item.id}
+          role="button"
+          tabIndex={0}
           className="group cursor-pointer bg-base-100 transition-colors hover:bg-base-200"
           onClick={(e) => handleCardClick(item, e)}
+          onKeyDown={(e) => handleKeyDown(item, e)}
         >
           <div className="mx-auto flex max-w-7xl items-start gap-4 px-6 py-4">
             <ThumbnailImage item={item} />

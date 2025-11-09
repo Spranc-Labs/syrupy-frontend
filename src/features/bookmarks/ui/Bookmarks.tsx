@@ -1,5 +1,4 @@
 import { Bookmark } from 'lucide-react'
-import type React from 'react'
 import { useCallback } from 'react'
 import { useBookmarks, useDeleteBookmark } from '@/entities/bookmark'
 import type { BrowserTab } from '@/entities/browsing-session'
@@ -48,7 +47,7 @@ function mapBookmarkToBrowserTab(bookmark: BookmarkResponse): BrowserTab {
   }
 }
 
-export const Bookmarks: React.FC = () => {
+export function Bookmarks() {
   // Use TanStack Query hooks for data fetching
   const { data: bookmarksData = [], isLoading, error } = useBookmarks({ per_page: 1000 })
   const deleteBookmark = useDeleteBookmark()
