@@ -22,16 +22,6 @@ interface BookmarkResponse {
   updated_at: string
 }
 
-interface BookmarksApiResponse {
-  success: boolean
-  data: BookmarkResponse[]
-  pagination?: {
-    current_page: number
-    per_page: number
-    total: number
-  }
-}
-
 // Helper to extract domain from URL
 function extractDomain(url: string): string | null {
   try {
@@ -66,13 +56,11 @@ export const Bookmarks: React.FC = () => {
   // Map bookmarks to BrowserTab format
   const bookmarks = bookmarksData.map(mapBookmarkToBrowserTab)
 
-  const handlePreview = useCallback((item: BrowserTab) => {
-    console.log('Preview bookmark:', item)
+  const handlePreview = useCallback((_item: BrowserTab) => {
     // TODO: Implement preview modal
   }, [])
 
-  const handleEdit = useCallback((item: BrowserTab) => {
-    console.log('Edit bookmark:', item)
+  const handleEdit = useCallback((_item: BrowserTab) => {
     // TODO: Implement edit modal
   }, [])
 
@@ -80,8 +68,8 @@ export const Bookmarks: React.FC = () => {
     async (item: BrowserTab) => {
       try {
         await deleteBookmark.mutateAsync(item.id)
-      } catch (err) {
-        console.error('Failed to delete bookmark:', err)
+      } catch (_err) {
+        // TODO: Show error toast notification
       }
     },
     [deleteBookmark]

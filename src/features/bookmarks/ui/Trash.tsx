@@ -53,8 +53,8 @@ export const Trash: React.FC = () => {
     async (item: BrowserTab) => {
       try {
         await restoreBookmark.mutateAsync(item.id)
-      } catch (err) {
-        console.error('Failed to restore bookmark:', err)
+      } catch (_err) {
+        // TODO: Show error toast notification
       }
     },
     [restoreBookmark]
@@ -64,15 +64,14 @@ export const Trash: React.FC = () => {
     async (item: BrowserTab) => {
       try {
         await deleteBookmark.mutateAsync(item.id)
-      } catch (err) {
-        console.error('Failed to permanently delete bookmark:', err)
+      } catch (_err) {
+        // TODO: Show error toast notification
       }
     },
     [deleteBookmark]
   )
 
-  const handlePreview = useCallback((item: BrowserTab) => {
-    console.log('Preview bookmark:', item)
+  const handlePreview = useCallback((_item: BrowserTab) => {
     // TODO: Implement preview modal
   }, [])
 

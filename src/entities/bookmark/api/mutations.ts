@@ -2,7 +2,6 @@ import { type UseMutationOptions, useMutation, useQueryClient } from '@tanstack/
 import { apiClient } from '@/shared/api'
 import type {
   Bookmark,
-  BookmarkResponse,
   CreateBookmarkInput,
   MoveBookmarkInput,
   UpdateBookmarkInput,
@@ -10,48 +9,48 @@ import type {
 import { bookmarkKeys } from './keys'
 
 async function createBookmark(data: CreateBookmarkInput): Promise<Bookmark> {
-  const response = await apiClient.post<BookmarkResponse>('/bookmarks', { bookmark: data })
+  const response = await apiClient.post<Bookmark>('/bookmarks', { bookmark: data })
 
-  if (response.success && response.data) {
-    return response.data
+  if ('success' in response && response.success && 'data' in response && response.data) {
+    return response.data as Bookmark
   }
 
   throw new Error('Failed to create bookmark')
 }
 
 async function updateBookmark(id: number, data: UpdateBookmarkInput): Promise<Bookmark> {
-  const response = await apiClient.put<BookmarkResponse>(`/bookmarks/${id}`, { bookmark: data })
+  const response = await apiClient.put<Bookmark>(`/bookmarks/${id}`, { bookmark: data })
 
-  if (response.success && response.data) {
-    return response.data
+  if ('success' in response && response.success && 'data' in response && response.data) {
+    return response.data as Bookmark
   }
 
   throw new Error('Failed to update bookmark')
 }
 
 async function deleteBookmark(id: number): Promise<void> {
-  const response = await apiClient.delete<{ success: boolean; message: string }>(`/bookmarks/${id}`)
+  const response = await apiClient.delete<void>(`/bookmarks/${id}`)
 
-  if (!response.success) {
-    throw new Error(response.message || 'Failed to delete bookmark')
+  if ('success' in response && !response.success) {
+    throw new Error((response as { message?: string }).message || 'Failed to delete bookmark')
   }
 }
 
 async function moveBookmark(id: number, data: MoveBookmarkInput): Promise<Bookmark> {
-  const response = await apiClient.post<BookmarkResponse>(`/bookmarks/${id}/move`, data)
+  const response = await apiClient.post<Bookmark>(`/bookmarks/${id}/move`, data)
 
-  if (response.success && response.data) {
-    return response.data
+  if ('success' in response && response.success && 'data' in response && response.data) {
+    return response.data as Bookmark
   }
 
   throw new Error('Failed to move bookmark')
 }
 
 async function restoreBookmark(id: number): Promise<Bookmark> {
-  const response = await apiClient.post<BookmarkResponse>(`/bookmarks/${id}/restore`)
+  const response = await apiClient.post<Bookmark>(`/bookmarks/${id}/restore`)
 
-  if (response.success && response.data) {
-    return response.data
+  if ('success' in response && response.success && 'data' in response && response.data) {
+    return response.data as Bookmark
   }
 
   throw new Error('Failed to restore bookmark')
@@ -74,7 +73,12 @@ export function useCreateBookmark(
 
 export function useUpdateBookmark(
   options?: Omit<
-    UseMutationOptions<Bookmark, Error, { id: number; data: UpdateBookmarkInput }>,
+    UseMutationOptions<
+      Bookmark,
+      Error,
+      { id: number; data: UpdateBookmarkInput },
+      { previous: Bookmark | undefined }
+    >,
     'mutationFn'
   >
 ) {
@@ -115,7 +119,10 @@ export function useUpdateBookmark(
 }
 
 export function useDeleteBookmark(
-  options?: Omit<UseMutationOptions<void, Error, number>, 'mutationFn'>
+  options?: Omit<
+    UseMutationOptions<void, Error, number, { previousLists: [readonly unknown[], unknown][] }>,
+    'mutationFn'
+  >
 ) {
   const queryClient = useQueryClient()
 
@@ -172,7 +179,10 @@ export function useMoveBookmark(
 }
 
 export function useRestoreBookmark(
-  options?: Omit<UseMutationOptions<Bookmark, Error, number>, 'mutationFn'>
+  options?: Omit<
+    UseMutationOptions<Bookmark, Error, number, { previousTrash: Bookmark[] | undefined }>,
+    'mutationFn'
+  >
 ) {
   const queryClient = useQueryClient()
 

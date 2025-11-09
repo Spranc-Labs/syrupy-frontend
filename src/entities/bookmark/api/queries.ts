@@ -1,9 +1,9 @@
 import { type UseQueryOptions, useQuery } from '@tanstack/react-query'
 import { apiClient } from '@/shared/api'
-import type { Bookmark, BookmarkResponse, BookmarksResponse } from '../types'
+import type { Bookmark, BookmarksResponse } from '../types'
 import { bookmarkKeys } from './keys'
 
-interface FetchBookmarksParams {
+interface FetchBookmarksParams extends Record<string, string | number | boolean | undefined> {
   collection_id?: number
   tag?: string
   q?: string
@@ -12,7 +12,9 @@ interface FetchBookmarksParams {
 }
 
 async function fetchBookmarks(params: FetchBookmarksParams = {}): Promise<Bookmark[]> {
-  const response = await apiClient.get<Bookmark[]>('/bookmarks', { params })
+  const response = await apiClient.get<Bookmark[]>('/bookmarks', {
+    params: params as Record<string, string | number | boolean | undefined>,
+  })
 
   // Handle both wrapped and unwrapped responses
   if (Array.isArray(response)) {
@@ -28,10 +30,10 @@ async function fetchBookmarks(params: FetchBookmarksParams = {}): Promise<Bookma
 }
 
 async function fetchBookmark(id: number): Promise<Bookmark> {
-  const response = await apiClient.get<BookmarkResponse>(`/bookmarks/${id}`)
+  const response = await apiClient.get<Bookmark>(`/bookmarks/${id}`)
 
-  if (response.success && response.data) {
-    return response.data
+  if ('success' in response && response.success && 'data' in response && response.data) {
+    return response.data as Bookmark
   }
 
   throw new Error('Failed to fetch bookmark')
