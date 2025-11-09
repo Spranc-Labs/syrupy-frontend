@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useAuth } from '@/app/providers'
 
 export const Login: React.FC = () => {
-  const [email, setEmail] = useState('test@example.com')
+  const [email, setEmail] = useState('demo@syrupy.com')
   const [password, setPassword] = useState('password123')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -97,7 +97,7 @@ export const Login: React.FC = () => {
 
           <div className="text-center text-gray-600 text-sm dark:text-gray-400">
             <p>Demo credentials:</p>
-            <p>Email: test@example.com</p>
+            <p>Email: demo@syrupy.com</p>
             <p>Password: password123</p>
           </div>
         </form>
