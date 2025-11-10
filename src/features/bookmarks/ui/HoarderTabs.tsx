@@ -1,4 +1,4 @@
-import { Monitor } from 'lucide-react'
+import { Monitor, X } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useCreateBookmarkFromHoarderTab } from '@/entities/bookmark'
 import type { BrowserTab } from '@/entities/browsing-session'
@@ -97,12 +97,32 @@ export function HoarderTabs() {
   return (
     <div className="min-h-screen bg-base-100">
       <div className="mx-auto max-w-7xl px-6 py-3">
-        <div>
-          <h1 className="text-primary text-xl">Hoarder Tabs</h1>
-          <p className="text-sm text-text-tertiary">
-            Tabs detected as potential hoarder tabs from your browsing history
-          </p>
-        </div>
+        {expandedTabId && expandedTab ? (
+          <div className="flex items-start justify-between">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-primary text-xl">{expandedTab.title || 'Untitled'}</h1>
+              {expandedTab.preview?.description && (
+                <p className="text-sm text-text-tertiary">{expandedTab.preview.description}</p>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={handleCancelBookmark}
+              className="ml-4 flex-shrink-0 rounded p-2 text-text-quaternary transition-colors hover:bg-base-200 hover:text-text-secondary"
+              disabled={createBookmark.isPending}
+              aria-label="Close bookmark panel"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        ) : (
+          <div>
+            <h1 className="text-primary text-xl">Hoarder Tabs</h1>
+            <p className="text-sm text-text-tertiary">
+              Tabs detected as potential hoarder tabs from your browsing history
+            </p>
+          </div>
+        )}
       </div>
 
       {error ? (
