@@ -24,7 +24,12 @@ async function fetchHoarderTabs(params?: HoarderTabsParams): Promise<HoarderTab[
   // Validate response structure
   if ('success' in response && response.success && 'data' in response && response.data) {
     const data = response.data as HoarderTabsResponse['data']
-    return data.hoarder_tabs
+
+    // Map backend response to frontend type (backend uses page_visit_id, frontend expects both id and page_visit_id)
+    return data.hoarder_tabs.map((tab) => ({
+      ...tab,
+      id: tab.page_visit_id, // Map page_visit_id to id for compatibility
+    }))
   }
 
   throw new Error('Failed to fetch hoarder tabs')

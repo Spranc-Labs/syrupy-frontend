@@ -13,7 +13,7 @@ export interface PreviewMetadata {
  * Browser tab from HeyHo
  */
 export interface BrowserTab {
-  id: number
+  id: number | string // Allow string for page_visit_id use case
   url: string
   title?: string | null
   domain?: string | null

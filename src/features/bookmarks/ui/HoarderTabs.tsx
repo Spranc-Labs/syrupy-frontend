@@ -2,6 +2,7 @@ import { Monitor } from 'lucide-react'
 import { useCallback } from 'react'
 import type { BrowserTab } from '@/entities/browsing-session'
 import { useHoarderTabs } from '@/entities/hoarder-tab'
+import { useDismissPageVisit } from '@/entities/page-visit'
 import { BookmarksList } from '@/features/bookmarks/components/BookmarksList'
 
 export function HoarderTabs() {
@@ -14,16 +15,21 @@ export function HoarderTabs() {
     limit: 1000,
   })
 
+  // Dismiss mutation
+  const dismissPageVisit = useDismissPageVisit()
+
   // Map HoarderTab to BrowserTab format for BookmarksList
-  const browserTabs: BrowserTab[] =
+  // Use page_visit_id as string ID (BookmarksList uses it as React key)
+  const browserTabs: (BrowserTab & { pageVisitId: string; id: string })[] =
     hoarderTabs?.map((tab) => ({
-      id: Number.parseInt(tab.id) || 0,
+      id: tab.page_visit_id, // Use page_visit_id as the unique string ID
       url: tab.url,
       title: tab.title,
       domain: tab.domain,
       preview: {
         favicon: tab.favicon_url,
       },
+      pageVisitId: tab.page_visit_id, // Also keep for API calls
     })) || []
 
   // Action handlers (placeholder implementations)
@@ -35,9 +41,20 @@ export function HoarderTabs() {
     // TODO: Implement edit modal
   }, [])
 
-  const handleDelete = useCallback((_item: BrowserTab) => {
-    // TODO: Implement dismiss/remove from hoarder tabs list
-  }, [])
+  const handleDelete = useCallback(
+    (item: BrowserTab) => {
+      // Cast to our extended type to access pageVisitId
+      const tabWithId = item as BrowserTab & { pageVisitId: string }
+
+      // Dismiss the tab using the page visit ID
+      dismissPageVisit.mutate(tabWithId.pageVisitId, {
+        onError: (_error) => {
+          // TODO: Show toast notification for error
+        },
+      })
+    },
+    [dismissPageVisit]
+  )
 
   if (isLoading) {
     return (
