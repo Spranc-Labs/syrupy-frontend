@@ -1,12 +1,16 @@
 import { Monitor } from 'lucide-react'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
+import { useCreateBookmarkFromHoarderTab } from '@/entities/bookmark'
 import type { BrowserTab } from '@/entities/browsing-session'
 import { useHoarderTabs } from '@/entities/hoarder-tab'
 import { useDismissPageVisit } from '@/entities/page-visit'
+import type { BookmarkFormData } from '@/features/bookmarks/components/BookmarkForm'
+import { BookmarkSavePanel } from '@/features/bookmarks/components/BookmarkSavePanel'
 import { BookmarksList } from '@/features/bookmarks/components/BookmarksList'
 
 export function HoarderTabs() {
-  // Fetch hoarder tabs directly from sync-be pattern detection API
+  const [expandedTabId, setExpandedTabId] = useState<string | null>(null)
+
   const {
     data: hoarderTabs,
     isLoading,
@@ -15,30 +19,63 @@ export function HoarderTabs() {
     limit: 1000,
   })
 
-  // Dismiss mutation
   const dismissPageVisit = useDismissPageVisit()
+  const createBookmark = useCreateBookmarkFromHoarderTab()
 
-  // Map HoarderTab to BrowserTab format for BookmarksList
-  // Use page_visit_id as string ID (BookmarksList uses it as React key)
   const browserTabs: (BrowserTab & { pageVisitId: string; id: string })[] =
     hoarderTabs?.map((tab) => ({
-      id: tab.page_visit_id, // Use page_visit_id as the unique string ID
+      id: tab.page_visit_id,
       url: tab.url,
       title: tab.title,
       domain: tab.domain,
       preview: {
         favicon: tab.favicon_url,
       },
-      pageVisitId: tab.page_visit_id, // Also keep for API calls
+      pageVisitId: tab.page_visit_id,
     })) || []
 
-  // Action handlers (placeholder implementations)
-  const handlePreview = useCallback((_item: BrowserTab) => {
-    // TODO: Implement preview modal
+  const expandedTab = browserTabs.find((tab) => tab.id === expandedTabId)
+
+  const handleBookmark = useCallback((item: BrowserTab) => {
+    const tabWithId = item as BrowserTab & { pageVisitId: string }
+    setExpandedTabId(tabWithId.pageVisitId)
   }, [])
 
-  const handleEdit = useCallback((_item: BrowserTab) => {
-    // TODO: Implement edit modal
+  const handleSaveBookmark = useCallback(
+    (data: BookmarkFormData) => {
+      if (!expandedTab) return
+
+      createBookmark.mutate(
+        {
+          bookmarkData: {
+            url: expandedTab.url,
+            title: data.title,
+            description: data.description,
+            collection_id: data.collection_id ?? undefined,
+            metadata: { note: data.note },
+            tag_names: data.tags,
+            preview_image: expandedTab.preview?.image ?? undefined,
+            preview_site_name: expandedTab.preview?.site_name ?? undefined,
+            preview_description: expandedTab.preview?.description ?? undefined,
+          },
+          pageVisitId: expandedTab.pageVisitId,
+        },
+        {
+          onSuccess: () => {
+            setExpandedTabId(null)
+          },
+        }
+      )
+    },
+    [expandedTab, createBookmark]
+  )
+
+  const handleCancelBookmark = useCallback(() => {
+    setExpandedTabId(null)
+  }, [])
+
+  const handlePreview = useCallback((_item: BrowserTab) => {
+    // TODO: Implement preview modal
   }, [])
 
   const handleDelete = useCallback(
@@ -59,7 +96,6 @@ export function HoarderTabs() {
 
   return (
     <div className="min-h-screen bg-base-100">
-      {/* Header Section - Centered with padding */}
       <div className="mx-auto max-w-7xl px-6 py-3">
         <div>
           <h1 className="text-primary text-xl">Hoarder Tabs</h1>
@@ -69,7 +105,6 @@ export function HoarderTabs() {
         </div>
       </div>
 
-      {/* Tab Content - Full Width */}
       {error ? (
         <div className="mx-auto max-w-7xl px-4">
           <div className="py-12 text-center">
@@ -89,12 +124,29 @@ export function HoarderTabs() {
           </div>
         </div>
       ) : (
-        <BookmarksList
-          items={browserTabs}
-          onPreview={handlePreview}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        <>
+          {expandedTabId && expandedTab && (
+            <BookmarkSavePanel
+              url={expandedTab.url}
+              title={expandedTab.title}
+              description={expandedTab.preview?.description}
+              previewImage={expandedTab.preview?.image}
+              siteName={expandedTab.preview?.site_name}
+              onSave={handleSaveBookmark}
+              onCancel={handleCancelBookmark}
+              isSubmitting={createBookmark.isPending}
+            />
+          )}
+
+          {!expandedTabId && (
+            <BookmarksList
+              items={browserTabs}
+              onPreview={handlePreview}
+              onEdit={handleBookmark}
+              onDelete={handleDelete}
+            />
+          )}
+        </>
       )}
     </div>
   )

@@ -1,4 +1,5 @@
 import { type UseMutationOptions, useMutation, useQueryClient } from '@tanstack/react-query'
+import { hoarderTabKeys } from '@/entities/hoarder-tab'
 import { apiClient } from '@/shared/api'
 import type {
   Bookmark,
@@ -213,6 +214,27 @@ export function useRestoreBookmark(
       // Refetch to ensure consistency
       queryClient.invalidateQueries({ queryKey: bookmarkKeys.trash() })
       queryClient.invalidateQueries({ queryKey: bookmarkKeys.lists() })
+    },
+    ...options,
+  })
+}
+
+export function useCreateBookmarkFromHoarderTab(
+  options?: Omit<
+    UseMutationOptions<Bookmark, Error, { bookmarkData: CreateBookmarkInput; pageVisitId: string }>,
+    'mutationFn'
+  >
+) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ bookmarkData }) => createBookmark(bookmarkData),
+    onSuccess: (_data, { pageVisitId }) => {
+      queryClient.invalidateQueries({ queryKey: bookmarkKeys.lists() })
+      queryClient.setQueriesData({ queryKey: hoarderTabKeys.all }, (old: unknown) => {
+        if (!Array.isArray(old)) return old
+        return old.filter((tab: { page_visit_id: string }) => tab.page_visit_id !== pageVisitId)
+      })
     },
     ...options,
   })

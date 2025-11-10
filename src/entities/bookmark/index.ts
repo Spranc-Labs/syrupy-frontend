@@ -1,6 +1,7 @@
 export { bookmarkKeys } from './api/keys'
 export {
   useCreateBookmark,
+  useCreateBookmarkFromHoarderTab,
   useDeleteBookmark,
   useMoveBookmark,
   useRestoreBookmark,
