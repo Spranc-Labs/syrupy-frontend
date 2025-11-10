@@ -8,16 +8,27 @@ interface DismissResponse {
   data?: {
     page_visit_id: string
     action_id: string
+    source: string
     dismissed_at: string
   }
   errors?: string[]
 }
 
+interface DismissParams {
+  pageVisitId: string
+  source?: 'hoarder_tabs' | 'research_sessions' | 'distraction_tabs' | 'bookmarks' | 'extension'
+}
+
 /**
- * Dismiss a page visit (hoarder tab)
+ * Dismiss a page visit from a specific detection pattern
+ * @param pageVisitId - The page visit ID to dismiss
+ * @param source - The context where the dismiss occurred (defaults to 'hoarder_tabs')
  */
-async function dismissPageVisit(pageVisitId: string): Promise<DismissResponse> {
-  const response = await apiClient.post(`/page_visits/${pageVisitId}/dismiss`)
+async function dismissPageVisit({
+  pageVisitId,
+  source = 'hoarder_tabs',
+}: DismissParams): Promise<DismissResponse> {
+  const response = await apiClient.post(`/page_visits/${pageVisitId}/dismiss`, { source })
 
   if ('success' in response && response.success) {
     return response as DismissResponse
@@ -32,17 +43,17 @@ async function dismissPageVisit(pageVisitId: string): Promise<DismissResponse> {
  */
 export function useDismissPageVisit(
   options?: Omit<
-    UseMutationOptions<DismissResponse, Error, string, { previousData: unknown }>,
+    UseMutationOptions<DismissResponse, Error, DismissParams, { previousData: unknown }>,
     'mutationFn'
   >
 ) {
   const queryClient = useQueryClient()
 
-  return useMutation<DismissResponse, Error, string, { previousData: unknown }>({
+  return useMutation<DismissResponse, Error, DismissParams, { previousData: unknown }>({
     mutationFn: dismissPageVisit,
 
     // Optimistically remove from the list
-    onMutate: async (pageVisitId) => {
+    onMutate: async ({ pageVisitId }) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: hoarderTabKeys.all })
 
@@ -62,7 +73,7 @@ export function useDismissPageVisit(
     },
 
     // Rollback on error
-    onError: (_error, _pageVisitId, context) => {
+    onError: (_error, _params, context) => {
       if (context?.previousData && Array.isArray(context.previousData)) {
         for (const [queryKey, data] of context.previousData as [
           queryKey: unknown[],
