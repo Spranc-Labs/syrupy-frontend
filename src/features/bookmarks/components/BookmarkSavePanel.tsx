@@ -1,4 +1,3 @@
-import { X } from 'lucide-react'
 import { useEffect } from 'react'
 import { BookmarkForm, type BookmarkFormData } from './BookmarkForm'
 import { ReaderModePreview } from './ReaderModePreview'
@@ -46,27 +45,10 @@ export function BookmarkSavePanel({
   }, [onCancel])
 
   return (
-    <div className="animate-in slide-in-from-top-4 mx-auto max-w-7xl px-6 py-4 duration-300">
-      <div className="overflow-hidden rounded-lg border border-base-300 bg-base-100 shadow-lg">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-base-300 bg-base-200/50 px-6 py-4">
-          <div>
-            <h3 className="font-semibold text-base-content text-lg">Save Bookmark</h3>
-            <p className="text-base-content/60 text-sm">Add this page to your collection</p>
-          </div>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="btn btn-circle btn-ghost btn-sm"
-            disabled={isSubmitting}
-            aria-label="Close panel"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-
+    <div className="bg-base-100">
+      <div className="mx-auto max-w-7xl px-6 py-4">
         {/* Two-column layout */}
-        <div className="grid grid-cols-1 gap-6 p-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Left: Preview */}
           <div className="h-[600px]">
             <ReaderModePreview

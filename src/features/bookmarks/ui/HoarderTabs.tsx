@@ -123,30 +123,24 @@ export function HoarderTabs() {
             </p>
           </div>
         </div>
+      ) : expandedTabId && expandedTab ? (
+        <BookmarkSavePanel
+          url={expandedTab.url}
+          title={expandedTab.title}
+          description={expandedTab.preview?.description}
+          previewImage={expandedTab.preview?.image}
+          siteName={expandedTab.preview?.site_name}
+          onSave={handleSaveBookmark}
+          onCancel={handleCancelBookmark}
+          isSubmitting={createBookmark.isPending}
+        />
       ) : (
-        <>
-          {expandedTabId && expandedTab && (
-            <BookmarkSavePanel
-              url={expandedTab.url}
-              title={expandedTab.title}
-              description={expandedTab.preview?.description}
-              previewImage={expandedTab.preview?.image}
-              siteName={expandedTab.preview?.site_name}
-              onSave={handleSaveBookmark}
-              onCancel={handleCancelBookmark}
-              isSubmitting={createBookmark.isPending}
-            />
-          )}
-
-          {!expandedTabId && (
-            <BookmarksList
-              items={browserTabs}
-              onPreview={handlePreview}
-              onEdit={handleBookmark}
-              onDelete={handleDelete}
-            />
-          )}
-        </>
+        <BookmarksList
+          items={browserTabs}
+          onPreview={handlePreview}
+          onEdit={handleBookmark}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   )
