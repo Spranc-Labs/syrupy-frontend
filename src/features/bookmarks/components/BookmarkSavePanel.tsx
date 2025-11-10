@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import { useEffect } from 'react'
 import { BookmarkForm, type BookmarkFormData } from './BookmarkForm'
 import { ReaderModePreview } from './ReaderModePreview'
@@ -47,9 +48,26 @@ export function BookmarkSavePanel({
   return (
     <div className="bg-base-100">
       <div className="mx-auto max-w-7xl px-6 py-4">
-        {/* Two-column layout */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* Left: Preview */}
+        {/* Header with title and close button */}
+        <div className="mb-6 flex items-start justify-between">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-xl font-semibold text-base-content">{title || 'Untitled'}</h2>
+            {description && <p className="mt-1 text-sm text-base-content/60">{description}</p>}
+          </div>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="ml-4 flex-shrink-0 rounded p-2 text-base-content/60 transition-colors hover:bg-base-200 hover:text-base-content"
+            disabled={isSubmitting}
+            aria-label="Close panel"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Two-column layout: 70% left, 30% right */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[70%_30%]">
+          {/* Left: Preview (70%) */}
           <div className="h-[600px]">
             <ReaderModePreview
               url={url}
@@ -60,7 +78,7 @@ export function BookmarkSavePanel({
             />
           </div>
 
-          {/* Right: Form */}
+          {/* Right: Form (30%) */}
           <div className="flex flex-col">
             <BookmarkForm
               initialData={{
