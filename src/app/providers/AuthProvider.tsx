@@ -68,16 +68,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<void> => {
     setIsLoading(true)
     try {
-      const response = await apiClient.post('/auth/login', { email, password })
+      const response = await apiClient.post<{
+        data: {
+          AccessToken: string
+          RefreshToken: string
+          IdToken: string
+          ExpiresIn: number
+          TokenType: string
+        }
+      }>('/auth/login', { email, password })
 
-      // Handle new response format: { data: { AccessToken, RefreshToken, IdToken, ... } }
-      if (response.data) {
-        const { AccessToken, RefreshToken } = response.data
+      if (response.data?.data) {
+        const { AccessToken, RefreshToken } = response.data.data
         if (AccessToken && RefreshToken) {
           tokenStorage.setTokens(AccessToken, RefreshToken)
           console.log('Login successful, tokens stored')
 
-          // Fetch user data after successful login
           const userData = await apiClient.get('/auth/me')
           if (userData.success && userData.user) {
             setUser(userData.user)
