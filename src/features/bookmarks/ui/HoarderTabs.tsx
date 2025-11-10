@@ -43,18 +43,8 @@ export function HoarderTabs() {
 
   const handleDelete = useCallback(
     (item: BrowserTab) => {
-      // Cast to our extended type to access pageVisitId
       const tabWithId = item as BrowserTab & { pageVisitId: string }
-
-      // Dismiss the tab from hoarder_tabs detection
-      dismissPageVisit.mutate(
-        { pageVisitId: tabWithId.pageVisitId, source: 'hoarder_tabs' },
-        {
-          onError: (_error) => {
-            // TODO: Show toast notification for error
-          },
-        }
-      )
+      dismissPageVisit.mutate({ pageVisitId: tabWithId.pageVisitId, source: 'hoarder_tabs' })
     },
     [dismissPageVisit]
   )

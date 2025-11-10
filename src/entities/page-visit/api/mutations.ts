@@ -19,11 +19,6 @@ interface DismissParams {
   source?: 'hoarder_tabs' | 'research_sessions' | 'distraction_tabs' | 'bookmarks' | 'extension'
 }
 
-/**
- * Dismiss a page visit from a specific detection pattern
- * @param pageVisitId - The page visit ID to dismiss
- * @param source - The context where the dismiss occurred (defaults to 'hoarder_tabs')
- */
 async function dismissPageVisit({
   pageVisitId,
   source = 'hoarder_tabs',
@@ -37,10 +32,6 @@ async function dismissPageVisit({
   throw new Error('Failed to dismiss page visit')
 }
 
-/**
- * Hook to dismiss a page visit
- * Includes optimistic updates to remove from hoarder tabs list
- */
 export function useDismissPageVisit(
   options?: Omit<
     UseMutationOptions<DismissResponse, Error, DismissParams, { previousData: unknown }>,
@@ -52,15 +43,10 @@ export function useDismissPageVisit(
   return useMutation<DismissResponse, Error, DismissParams, { previousData: unknown }>({
     mutationFn: dismissPageVisit,
 
-    // Optimistically remove from the list
     onMutate: async ({ pageVisitId }) => {
-      // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: hoarderTabKeys.all })
-
-      // Snapshot current data
       const previousData = queryClient.getQueriesData({ queryKey: hoarderTabKeys.all })
 
-      // Optimistically remove the dismissed tab from all hoarder tab queries
       queryClient.setQueriesData(
         { queryKey: hoarderTabKeys.all },
         (old: Array<{ page_visit_id: string }> | undefined) => {
@@ -72,7 +58,6 @@ export function useDismissPageVisit(
       return { previousData }
     },
 
-    // Rollback on error
     onError: (_error, _params, context) => {
       if (context?.previousData && Array.isArray(context.previousData)) {
         for (const [queryKey, data] of context.previousData as [
