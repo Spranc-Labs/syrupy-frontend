@@ -51,7 +51,7 @@ export function Trash() {
   const handleRestore = useCallback(
     async (item: BrowserTab) => {
       try {
-        await restoreBookmark.mutateAsync(item.id)
+        await restoreBookmark.mutateAsync(item.id as number)
       } catch (_err) {
         // TODO: Show error toast notification
       }
@@ -62,7 +62,7 @@ export function Trash() {
   const handlePermanentDelete = useCallback(
     async (item: BrowserTab) => {
       try {
-        await deleteBookmark.mutateAsync(item.id)
+        await deleteBookmark.mutateAsync(item.id as number)
       } catch (_err) {
         // TODO: Show error toast notification
       }

@@ -66,7 +66,7 @@ export function Bookmarks() {
   const handleDelete = useCallback(
     async (item: BrowserTab) => {
       try {
-        await deleteBookmark.mutateAsync(item.id)
+        await deleteBookmark.mutateAsync(item.id as number)
       } catch (_err) {
         // TODO: Show error toast notification
       }

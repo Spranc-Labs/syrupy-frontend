@@ -5,6 +5,7 @@
 
 export interface HoarderTab {
   id: string
+  page_visit_id: string // The actual page visit ID from backend
   url: string
   title: string | null
   domain: string
