@@ -1,3 +1,4 @@
+import { useNavigate } from '@tanstack/react-router'
 import { Eye, Pencil, Trash2 } from 'lucide-react'
 import type React from 'react'
 import type { BrowserTab } from '@/entities/browsing-session'
@@ -24,6 +25,8 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({
   deleteIcon = <Trash2 className="h-4 w-4" />,
   deleteLabel = 'Delete bookmark',
 }) => {
+  const navigate = useNavigate()
+
   if (items.length === 0) {
     return null
   }
@@ -33,14 +36,15 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({
     if ((e.target as HTMLElement).closest('button')) {
       return
     }
-    window.open(item.url, '_blank', 'noopener,noreferrer')
+    // Navigate to bookmark detail page
+    navigate({ to: '/bookmarks/$bookmarkId', params: { bookmarkId: String(item.id) } })
   }
 
   const handleKeyDown = (item: BrowserTab, e: React.KeyboardEvent) => {
     // Activate on Enter or Space key
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
-      window.open(item.url, '_blank', 'noopener,noreferrer')
+      navigate({ to: '/bookmarks/$bookmarkId', params: { bookmarkId: String(item.id) } })
     }
   }
 

@@ -24,6 +24,7 @@ import { Route as AuthHeyhoAuthorizeRouteImport } from './routes/auth/heyho/auth
 import { Route as AuthenticatedJournalNewRouteImport } from './routes/_authenticated/journal.new'
 import { Route as AuthenticatedBookmarksTrashRouteImport } from './routes/_authenticated/bookmarks/trash'
 import { Route as AuthenticatedBookmarksCategoryRouteImport } from './routes/_authenticated/bookmarks/$category'
+import { Route as AuthenticatedBookmarksBookmarkIdRouteImport } from './routes/_authenticated/bookmarks/$bookmarkId'
 import { Route as AuthenticatedJournalIdEditRouteImport } from './routes/_authenticated/journal.$id.edit'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -103,6 +104,12 @@ const AuthenticatedBookmarksCategoryRoute =
     path: '/bookmarks/$category',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedBookmarksBookmarkIdRoute =
+  AuthenticatedBookmarksBookmarkIdRouteImport.update({
+    id: '/bookmarks/$bookmarkId',
+    path: '/bookmarks/$bookmarkId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedJournalIdEditRoute =
   AuthenticatedJournalIdEditRouteImport.update({
     id: '/$id/edit',
@@ -120,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/journal': typeof AuthenticatedJournalRouteWithChildren
   '/mood': typeof AuthenticatedMoodRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/bookmarks/$bookmarkId': typeof AuthenticatedBookmarksBookmarkIdRoute
   '/bookmarks/$category': typeof AuthenticatedBookmarksCategoryRoute
   '/bookmarks/trash': typeof AuthenticatedBookmarksTrashRoute
   '/journal/new': typeof AuthenticatedJournalNewRoute
@@ -137,6 +145,7 @@ export interface FileRoutesByTo {
   '/journal': typeof AuthenticatedJournalRouteWithChildren
   '/mood': typeof AuthenticatedMoodRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/bookmarks/$bookmarkId': typeof AuthenticatedBookmarksBookmarkIdRoute
   '/bookmarks/$category': typeof AuthenticatedBookmarksCategoryRoute
   '/bookmarks/trash': typeof AuthenticatedBookmarksTrashRoute
   '/journal/new': typeof AuthenticatedJournalNewRoute
@@ -156,6 +165,7 @@ export interface FileRoutesById {
   '/_authenticated/journal': typeof AuthenticatedJournalRouteWithChildren
   '/_authenticated/mood': typeof AuthenticatedMoodRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/bookmarks/$bookmarkId': typeof AuthenticatedBookmarksBookmarkIdRoute
   '/_authenticated/bookmarks/$category': typeof AuthenticatedBookmarksCategoryRoute
   '/_authenticated/bookmarks/trash': typeof AuthenticatedBookmarksTrashRoute
   '/_authenticated/journal/new': typeof AuthenticatedJournalNewRoute
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/journal'
     | '/mood'
     | '/settings'
+    | '/bookmarks/$bookmarkId'
     | '/bookmarks/$category'
     | '/bookmarks/trash'
     | '/journal/new'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/journal'
     | '/mood'
     | '/settings'
+    | '/bookmarks/$bookmarkId'
     | '/bookmarks/$category'
     | '/bookmarks/trash'
     | '/journal/new'
@@ -210,6 +222,7 @@ export interface FileRouteTypes {
     | '/_authenticated/journal'
     | '/_authenticated/mood'
     | '/_authenticated/settings'
+    | '/_authenticated/bookmarks/$bookmarkId'
     | '/_authenticated/bookmarks/$category'
     | '/_authenticated/bookmarks/trash'
     | '/_authenticated/journal/new'
@@ -333,6 +346,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBookmarksCategoryRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/bookmarks/$bookmarkId': {
+      id: '/_authenticated/bookmarks/$bookmarkId'
+      path: '/bookmarks/$bookmarkId'
+      fullPath: '/bookmarks/$bookmarkId'
+      preLoaderRoute: typeof AuthenticatedBookmarksBookmarkIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/journal/$id/edit': {
       id: '/_authenticated/journal/$id/edit'
       path: '/$id/edit'
@@ -363,6 +383,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedJournalRoute: typeof AuthenticatedJournalRouteWithChildren
   AuthenticatedMoodRoute: typeof AuthenticatedMoodRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedBookmarksBookmarkIdRoute: typeof AuthenticatedBookmarksBookmarkIdRoute
   AuthenticatedBookmarksCategoryRoute: typeof AuthenticatedBookmarksCategoryRoute
   AuthenticatedBookmarksTrashRoute: typeof AuthenticatedBookmarksTrashRoute
   AuthenticatedBookmarksIndexRoute: typeof AuthenticatedBookmarksIndexRoute
@@ -375,6 +396,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedJournalRoute: AuthenticatedJournalRouteWithChildren,
   AuthenticatedMoodRoute: AuthenticatedMoodRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedBookmarksBookmarkIdRoute: AuthenticatedBookmarksBookmarkIdRoute,
   AuthenticatedBookmarksCategoryRoute: AuthenticatedBookmarksCategoryRoute,
   AuthenticatedBookmarksTrashRoute: AuthenticatedBookmarksTrashRoute,
   AuthenticatedBookmarksIndexRoute: AuthenticatedBookmarksIndexRoute,
