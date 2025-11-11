@@ -1,7 +1,9 @@
 import { useParams } from '@tanstack/react-router'
 import { ArrowLeft, ArrowRight, Edit, ExternalLink, Highlighter, Maximize2 } from 'lucide-react'
 import { useState } from 'react'
+import type { BrowserTab } from '@/entities/browsing-session'
 import { HighlightsPanel } from '../components/HighlightsPanel'
+import { ThumbnailImage } from '../components/ThumbnailImage'
 import { WebPagePreview } from '../components/WebPagePreview'
 
 export function BookmarkDetail() {
@@ -9,84 +11,126 @@ export function BookmarkDetail() {
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   // TODO: Fetch bookmark data
-  const bookmark = {
+  const bookmark: BrowserTab = {
     id: bookmarkId,
-    title: 'System Design',
+    title: 'A guide on system design',
     url: 'https://gyle.system.design',
-    collection: 'Unsorted',
-    highlights: [
-      {
-        id: '1',
-        text: 'Scalability is frequently used as a magic incantation to indicate that something is badly designed or broken. Often you hear in a discussion "but that doesn\'t scale" as the magical word to end an argument.',
-        note: 'This is an additional notes. Can be linked anywhere and edit when clicked.',
-      },
-      {
-        id: '2',
-        text: 'Scalability is frequently used as a magic incantation to indicate that something is badly designed or broken. Often you hear in a discussion "but that doesn\'t scale" as the magical word to end an argument.',
-        note: null,
-      },
-      {
-        id: '3',
-        text: 'Add your notes or highlight from preview',
-        note: null,
-      },
-    ],
+    domain: 'gyle.system.design',
+    preview: {
+      image: null,
+      description:
+        'Scalability is frequently used as a magic incantation to indicate that something is badly designed or broken. Often you hear in a discussion "but that doesn\'t scale" as the magical word to end an argument.',
+      site_name: null,
+      favicon: null,
+    },
   }
+
+  const highlights = [
+    {
+      id: '1',
+      text: 'Scalability is frequently used as a magic incantation to indicate that something is badly designed or broken. Often you hear in a discussion "but that doesn\'t scale" as the magical word to end an argument.',
+      note: 'This is an additional notes. Can be linked anywhere and edit when clicked.',
+    },
+    {
+      id: '2',
+      text: 'Scalability is frequently used as a magic incantation to indicate that something is badly designed or broken. Often you hear in a discussion "but that doesn\'t scale" as the magical word to end an argument.',
+      note: null,
+    },
+    {
+      id: '3',
+      text: 'Add your notes or highlight from preview',
+      note: null,
+    },
+  ]
+
+  const collection = 'Unsorted'
 
   return (
     <div className="flex h-screen flex-col bg-base-100">
-      {/* Header */}
-      <div className="border-b border-base-300 bg-base-100">
-        <div className="mx-auto flex max-w-[1920px] items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={() => window.history.back()}
-              className="rounded p-2 text-base-content/60 transition-colors hover:bg-base-200 hover:text-base-content"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </button>
-            <div>
-              <h1 className="text-xl font-semibold text-primary">{bookmark.title}</h1>
-              <p className="text-sm text-text-tertiary">{new URL(bookmark.url).hostname}</p>
+      {/* Header Section - Collection Name */}
+      <div className="mx-auto max-w-7xl px-6 py-2">
+        <div>
+          <h1 className="text-xl text-primary">{collection}</h1>
+          <p className="text-sm text-text-tertiary">
+            Bookmarks related to {collection.toLowerCase()} and lots of readings
+          </p>
+        </div>
+      </div>
+
+      {/* Bookmark Card */}
+      <div className="bg-base-100">
+        <div className="mx-auto max-w-7xl px-6 py-4">
+          <div className="flex items-start gap-4">
+            <ThumbnailImage item={bookmark} />
+
+            {/* Content */}
+            <div className="min-w-0 flex-1">
+              <div className="mb-1 flex items-baseline gap-2">
+                <h3 className="truncate text-[14px] font-medium text-text-dark">
+                  {bookmark.title || 'Untitled'}
+                </h3>
+                {bookmark.domain && (
+                  <span className="flex-shrink-0 text-[10px] font-light text-text-tertiary">
+                    {bookmark.domain}
+                  </span>
+                )}
+              </div>
+              {bookmark.preview?.description && (
+                <p className="truncate text-[12px] text-text-tertiary">
+                  {bookmark.preview.description}
+                </p>
+              )}
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Action Buttons - Separate Row */}
+          <div className="mt-3 flex items-center gap-1 border-t border-base-300 pt-3">
             <button
               type="button"
               onClick={() => setIsFullscreen(!isFullscreen)}
-              className="btn btn-ghost btn-sm gap-2"
+              className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
+              aria-label="Fullscreen"
             >
               <Maximize2 className="h-4 w-4" />
-              {!isFullscreen && <span className="hidden lg:inline">Fullscreen</span>}
             </button>
 
-            <div className="badge badge-outline">{bookmark.collection}</div>
+            <button
+              type="button"
+              className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
+              aria-label="Previous bookmark"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
+              aria-label="Next bookmark"
+            >
+              <ArrowRight className="h-4 w-4" />
+            </button>
 
-            <div className="flex gap-1">
-              <button type="button" className="btn btn-ghost btn-sm" aria-label="Previous bookmark">
-                <ArrowLeft className="h-4 w-4" />
-              </button>
-              <button type="button" className="btn btn-ghost btn-sm" aria-label="Next bookmark">
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </div>
-
-            <button type="button" className="btn btn-ghost btn-sm gap-2">
+            <button
+              type="button"
+              className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
+              aria-label="Highlights"
+            >
               <Highlighter className="h-4 w-4" />
-              <span className="hidden lg:inline">Highlights</span>
             </button>
 
-            <button type="button" className="btn btn-ghost btn-sm gap-2">
+            <button
+              type="button"
+              className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
+              aria-label="Edit"
+            >
               <Edit className="h-4 w-4" />
-              <span className="hidden lg:inline">Edit</span>
             </button>
 
-            <button type="button" className="btn btn-ghost btn-sm gap-2">
+            <button
+              type="button"
+              className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
+              aria-label="Links"
+            >
               <ExternalLink className="h-4 w-4" />
-              <span className="hidden lg:inline">Links</span>
             </button>
           </div>
         </div>
@@ -102,7 +146,7 @@ export function BookmarkDetail() {
         {/* Right: Highlights Panel */}
         {!isFullscreen && (
           <div className="w-[400px] overflow-hidden border-l border-base-300">
-            <HighlightsPanel highlights={bookmark.highlights} />
+            <HighlightsPanel highlights={highlights} />
           </div>
         )}
       </div>

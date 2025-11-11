@@ -7,10 +7,10 @@ interface Highlight {
 }
 
 interface HighlightsPanelProps {
-  highlights: Highlight[]
+  highlights?: Highlight[]
 }
 
-export function HighlightsPanel({ highlights }: HighlightsPanelProps) {
+export function HighlightsPanel({ highlights = [] }: HighlightsPanelProps) {
   return (
     <div className="flex h-full flex-col bg-base-100">
       {/* Header */}
@@ -20,42 +20,48 @@ export function HighlightsPanel({ highlights }: HighlightsPanelProps) {
 
       {/* Highlights List */}
       <div className="flex-1 space-y-6 overflow-y-auto px-6 py-4">
-        {highlights.map((highlight) => (
-          <div key={highlight.id} className="space-y-2">
-            {/* Highlighted Text */}
-            <div className="border-l-4 border-primary bg-primary/5 py-2 pl-4 pr-2">
-              <p className="text-sm leading-relaxed text-base-content/80">{highlight.text}</p>
-            </div>
+        {highlights.length === 0 ? (
+          <div className="py-8 text-center text-sm text-text-tertiary">
+            No highlights yet. Start highlighting content from the preview.
+          </div>
+        ) : (
+          highlights.map((highlight) => (
+            <div key={highlight.id} className="space-y-2">
+              {/* Highlighted Text */}
+              <div className="border-l-4 border-primary bg-primary/5 py-2 pl-4 pr-2">
+                <p className="text-sm leading-relaxed text-base-content/80">{highlight.text}</p>
+              </div>
 
-            {/* Note (if exists) */}
-            {highlight.note && (
-              <div className="pl-4">
-                <p className="text-sm text-text-tertiary">{highlight.note}</p>
-                {highlight.note.includes('link') && (
+              {/* Note (if exists) */}
+              {highlight.note && (
+                <div className="pl-4">
+                  <p className="text-sm text-text-tertiary">{highlight.note}</p>
+                  {highlight.note.includes('link') && (
+                    <button
+                      type="button"
+                      className="mt-1 flex items-center gap-1 text-xs text-primary hover:underline"
+                    >
+                      <LinkIcon className="h-3 w-3" />
+                      This is a link
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Empty note placeholder */}
+              {!highlight.note && (
+                <div className="pl-4">
                   <button
                     type="button"
-                    className="mt-1 flex items-center gap-1 text-xs text-primary hover:underline"
+                    className="text-sm text-text-quaternary hover:text-text-tertiary"
                   >
-                    <LinkIcon className="h-3 w-3" />
-                    This is a link
+                    Add your notes or highlight from preview
                   </button>
-                )}
-              </div>
-            )}
-
-            {/* Empty note placeholder */}
-            {!highlight.note && (
-              <div className="pl-4">
-                <button
-                  type="button"
-                  className="text-sm text-text-quaternary hover:text-text-tertiary"
-                >
-                  Add your notes or highlight from preview
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
+                </div>
+              )}
+            </div>
+          ))
+        )}
       </div>
 
       {/* Footer */}
