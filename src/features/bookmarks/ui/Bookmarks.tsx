@@ -115,6 +115,7 @@ export function Bookmarks() {
           onPreview={handlePreview}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          navigateToDetail={true}
         />
       )}
     </div>

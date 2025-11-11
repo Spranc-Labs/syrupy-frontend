@@ -50,7 +50,7 @@ export function BookmarkDetail() {
       {/* Header Section - Collection Name */}
       <div className="mx-auto max-w-7xl px-6 py-2">
         <div>
-          <h1 className="text-xl text-primary">{collection}</h1>
+          <h1 className="text-primaryimaryixl">{collection}</h1>
           <p className="text-sm text-text-tertiary">
             Bookmarks related to {collection.toLowerCase()} and lots of readings
           </p>
@@ -59,18 +59,18 @@ export function BookmarkDetail() {
 
       {/* Bookmark Card */}
       <div className="bg-base-100">
-        <div className="mx-auto max-w-7xl px-6 py-4">
+        <div className="max-w-7xl px-6 py-4">
           <div className="flex items-start gap-4">
             <ThumbnailImage item={bookmark} />
 
             {/* Content */}
             <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-baseline gap-2">
-                <h3 className="truncate text-[14px] font-medium text-text-dark">
+                <h3 className="truncate font-medium font-medium text-text-dark">
                   {bookmark.title || 'Untitled'}
                 </h3>
                 {bookmark.domain && (
-                  <span className="flex-shrink-0 text-[10px] font-light text-text-tertiary">
+                  <span className="flex-shrink-0 font-light font-light  text-text-tertiary">
                     {bookmark.domain}
                   </span>
                 )}
@@ -84,7 +84,7 @@ export function BookmarkDetail() {
           </div>
 
           {/* Action Buttons - Separate Row */}
-          <div className="mt-3 flex items-center gap-1 border-t border-base-300 pt-3">
+          <div className="mt-3 flex items-center gap-1 border-base-300ase-300at pt-3">
             <button
               type="button"
               onClick={() => setIsFullscreen(!isFullscreen)}
@@ -145,7 +145,7 @@ export function BookmarkDetail() {
 
         {/* Right: Highlights Panel */}
         {!isFullscreen && (
-          <div className="w-[400px] overflow-hidden border-l border-base-300">
+          <div className="w-[400px] overflow-hidden border-base-300ase-300al">
             <HighlightsPanel highlights={highlights} />
           </div>
         )}

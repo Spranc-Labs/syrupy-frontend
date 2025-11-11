@@ -1,3 +1,4 @@
+import { useNavigate } from '@tanstack/react-router'
 import { Monitor, X } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useCreateBookmarkFromHoarderTab } from '@/entities/bookmark'
@@ -9,6 +10,7 @@ import { BookmarkSavePanel } from '@/features/bookmarks/components/BookmarkSaveP
 import { BookmarksList } from '@/features/bookmarks/components/BookmarksList'
 
 export function HoarderTabs() {
+  const navigate = useNavigate()
   const [expandedTabId, setExpandedTabId] = useState<string | null>(null)
 
   const {
@@ -35,6 +37,14 @@ export function HoarderTabs() {
     })) || []
 
   const expandedTab = browserTabs.find((tab) => tab.id === expandedTabId)
+
+  const handlePreview = useCallback(
+    (item: BrowserTab) => {
+      // Navigate to bookmark detail view
+      navigate({ to: '/bookmarks/$bookmarkId', params: { bookmarkId: String(item.id) } })
+    },
+    [navigate]
+  )
 
   const handleBookmark = useCallback((item: BrowserTab) => {
     const tabWithId = item as BrowserTab & { pageVisitId: string }
@@ -74,10 +84,6 @@ export function HoarderTabs() {
     setExpandedTabId(null)
   }, [])
 
-  const handlePreview = useCallback((_item: BrowserTab) => {
-    // TODO: Implement preview modal
-  }, [])
-
   const handleDelete = useCallback(
     (item: BrowserTab) => {
       const tabWithId = item as BrowserTab & { pageVisitId: string }
@@ -85,6 +91,14 @@ export function HoarderTabs() {
     },
     [dismissPageVisit]
   )
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-base-100">
+        <div className="flex justify-center p-8 text-text-secondary">Loading hoarder tabs...</div>
+      </div>
+    )
+  }
 
   if (isLoading) {
     return (

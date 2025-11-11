@@ -13,6 +13,7 @@ interface BookmarksListProps {
   editLabel?: string
   deleteIcon?: React.ReactNode
   deleteLabel?: string
+  navigateToDetail?: boolean
 }
 
 export const BookmarksList: React.FC<BookmarksListProps> = ({
@@ -24,6 +25,7 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({
   editLabel = 'Edit bookmark',
   deleteIcon = <Trash2 className="h-4 w-4" />,
   deleteLabel = 'Delete bookmark',
+  navigateToDetail = false,
 }) => {
   const navigate = useNavigate()
 
@@ -36,15 +38,26 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({
     if ((e.target as HTMLElement).closest('button')) {
       return
     }
-    // Navigate to bookmark detail page
-    navigate({ to: '/bookmarks/$bookmarkId', params: { bookmarkId: String(item.id) } })
+
+    if (navigateToDetail) {
+      // Navigate to bookmark detail page
+      navigate({ to: '/bookmarks/$bookmarkId', params: { bookmarkId: String(item.id) } })
+    } else if (onPreview) {
+      // Call onPreview callback for inline preview
+      onPreview(item)
+    }
   }
 
   const handleKeyDown = (item: BrowserTab, e: React.KeyboardEvent) => {
     // Activate on Enter or Space key
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
-      navigate({ to: '/bookmarks/$bookmarkId', params: { bookmarkId: String(item.id) } })
+
+      if (navigateToDetail) {
+        navigate({ to: '/bookmarks/$bookmarkId', params: { bookmarkId: String(item.id) } })
+      } else if (onPreview) {
+        onPreview(item)
+      }
     }
   }
 
