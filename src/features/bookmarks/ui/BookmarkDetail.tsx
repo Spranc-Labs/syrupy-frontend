@@ -34,14 +34,12 @@ export function BookmarkDetail() {
   }
   const bookmark = stateBookmark || fallbackBookmark
 
-  // Set initial panel from search params or default to highlights
   const [activePanel, setActivePanel] = useState<PanelType>(search.panel || 'highlights')
 
   const collection = search.collection || 'Unsorted'
   const collectionRoute = search.collectionRoute || '/bookmarks'
 
   const handleCollectionClick = () => {
-    // Navigate back to collection using router history
     router.history.push(collectionRoute)
   }
 
@@ -116,7 +114,6 @@ export function BookmarkDetail() {
           <div className="flex items-start gap-4">
             <ThumbnailImage item={bookmark} />
 
-            {/* Content */}
             <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-baseline gap-2">
                 <h3 className="truncate font-medium text-text-dark">
@@ -139,7 +136,6 @@ export function BookmarkDetail() {
 
         {/* Action Buttons - Separate Row */}
         <div className="flex items-center justify-between border-base-300 border-t px-6 py-3">
-          {/* Left side: Icon-only buttons */}
           <div className="flex items-center gap-2">
             <IconButton
               icon={<Maximize2 />}
@@ -156,7 +152,6 @@ export function BookmarkDetail() {
             <IconButton icon={<ArrowRight />} size="sm" aria-label="Next bookmark" />
           </div>
 
-          {/* Right side: Buttons with text */}
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
@@ -191,14 +186,12 @@ export function BookmarkDetail() {
         </div>
       </div>
 
-      {/* Main Content - 2 column layout (preview + highlights) */}
+      {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Center: Web Preview */}
         <div className="flex-1 overflow-hidden">
           <WebPagePreview url={bookmark.url} />
         </div>
 
-        {/* Right: Side Panel */}
         {!isFullscreen && activePanel && (
           <div className="relative z-[100] h-full w-[400px] overflow-hidden border-base-300">
             {activePanel === 'highlights' && (
@@ -210,11 +203,9 @@ export function BookmarkDetail() {
                 onClose={() => setActivePanel(null)}
                 onFavorite={() => {
                   // TODO: Implement favorite functionality
-                  console.log('Favorite bookmark:', bookmark.id)
                 }}
                 onDelete={() => {
                   // TODO: Implement delete functionality
-                  console.log('Delete bookmark:', bookmark.id)
                 }}
               />
             )}

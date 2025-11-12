@@ -20,6 +20,19 @@ export default {
           light: '#F4F4F4',      // Very light text
           dark: '#444444',       // Dark gray for sidebar items
         },
+        // Custom border colors
+        border: {
+          DEFAULT: '#D9D9D9',    // Input borders
+          light: '#E5E5E5',      // Lighter borders (base-300)
+        },
+        // Custom input/form colors
+        input: {
+          bg: '#F9F9F9',         // Input background
+        },
+        // Custom link colors
+        link: {
+          DEFAULT: '#6F43FF',    // Link color (purple)
+        },
         // Theme colors for utility classes
         primary: {
           DEFAULT: '#3209BB',

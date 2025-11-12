@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Link as LinkIcon, Plus, X } from 'react-feather'
+import { Link as LinkIcon, Plus } from 'react-feather'
 import type { BrowserTab } from '@/entities/browsing-session'
-import { Button, IconButton } from '@/shared/ui'
+import { Button, EmptyState, PanelFooter, PanelHeader } from '@/shared/ui'
 import { BookmarksList } from './BookmarksList'
 import { StyledInput } from './StyledInput'
 
@@ -48,14 +48,10 @@ export function LinksPanel({
 
   return (
     <div className="flex h-full flex-col bg-base-100">
-      {/* Header */}
-      <div className="flex items-center justify-between px-6 py-3">
-        <h2 className="text-lg font-semibold text-base-content">Linked Bookmarks</h2>
-        <IconButton icon={<X />} size="sm" aria-label="Close links panel" onClick={onClose} />
-      </div>
+      <PanelHeader title="Linked Bookmarks" onClose={onClose} closeAriaLabel="Close links panel" />
 
       {/* Add Link Input */}
-      <div className="border-b border-base-300 px-6 py-3">
+      <div className="border-base-300 border-b px-6 py-3">
         <div className="flex items-end gap-2">
           <StyledInput
             type="url"
@@ -79,8 +75,13 @@ export function LinksPanel({
       {/* Links List */}
       <div className="flex-1 overflow-y-auto">
         {links.length === 0 ? (
-          <div className="px-6 py-8 text-center text-sm text-text-tertiary">
-            No linked bookmarks yet. Add bookmarks that are related to this one.
+          <div className="px-6">
+            <EmptyState
+              size="sm"
+              icon={<span />}
+              title="No linked bookmarks yet"
+              description="Add bookmarks that are related to this one"
+            />
           </div>
         ) : (
           <BookmarksList
@@ -95,13 +96,15 @@ export function LinksPanel({
         )}
       </div>
 
-      {/* Footer */}
-      <div className="flex min-h-[52px] items-center justify-between border-t border-base-300 px-6 py-3">
-        <span className="text-[10px]" style={{ color: '#BAB8B8' }}>
-          {links.length} linked bookmark{links.length !== 1 ? 's' : ''}
-        </span>
-        <div />
-      </div>
+      <PanelFooter
+        className="min-h-[52px]"
+        leftContent={
+          <span className="text-[10px] text-text-quaternary">
+            {links.length} linked bookmark{links.length !== 1 ? 's' : ''}
+          </span>
+        }
+        rightContent={<div />}
+      />
     </div>
   )
 }

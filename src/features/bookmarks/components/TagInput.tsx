@@ -47,7 +47,7 @@ export function TagInput({ tags, onAdd, onRemove, placeholder = 'Add more tags' 
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="min-w-[120px] flex-1 border-none bg-transparent p-0 text-text-dark text-[12px] outline-none placeholder:text-text-tertiary focus:outline-none focus:ring-0"
+        className="min-w-[120px] flex-1 border-none bg-transparent p-0 text-[12px] text-text-dark outline-none placeholder:text-text-tertiary focus:outline-none focus:ring-0"
         placeholder={tags.length === 0 ? placeholder : ''}
       />
     </div>

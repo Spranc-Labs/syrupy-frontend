@@ -9,7 +9,7 @@ export function SidebarSection({ title, children }: SidebarSectionProps) {
   return (
     <div className="flex flex-col gap-0.5">
       {title && (
-        <h3 className="mb-1.5 px-3 text-xs font-semibold uppercase tracking-wider text-text-tertiary">
+        <h3 className="mb-1.5 px-3 font-semibold text-text-tertiary text-xs uppercase tracking-wider">
           {title}
         </h3>
       )}

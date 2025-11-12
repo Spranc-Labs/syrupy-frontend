@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Trash2 } from 'react-feather'
+import { useActionMenuPosition, useAutoResizeTextarea, useClickOutside } from '@/shared/lib/hooks'
 import { Button } from '@/shared/ui'
 
 interface Highlight {
@@ -24,7 +25,7 @@ interface HighlightItemProps {
 export function HighlightItem({
   highlight,
   onDelete,
-  onClear,
+  onClear: _onClear,
   onUpdate,
   isActive,
   onSetActive,
@@ -32,11 +33,12 @@ export function HighlightItem({
   onSetEditing,
 }: HighlightItemProps) {
   const [editedText, setEditedText] = useState(highlight.text)
-  const [buttonPosition, setButtonPosition] = useState({ top: 0, left: 0 })
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const isHighlight = highlight.type !== 'note'
+
+  const buttonPosition = useActionMenuPosition(containerRef, isActive || isEditing, [editedText])
 
   // Reset edited text when highlight text changes or when exiting edit mode
   useEffect(() => {
@@ -45,41 +47,8 @@ export function HighlightItem({
     }
   }, [isEditing, highlight.text])
 
-  // Calculate button position when active or editing
-  useEffect(() => {
-    if (isActive || isEditing) {
-      // Use requestAnimationFrame to ensure DOM has updated
-      const updatePosition = () => {
-        if (containerRef.current) {
-          const rect = containerRef.current.getBoundingClientRect()
-          setButtonPosition({
-            top: rect.top + rect.height / 2,
-            left: rect.left,
-          })
-        }
-      }
-
-      // Initial position
-      requestAnimationFrame(updatePosition)
-
-      // Also update on any layout changes
-      const rafId = requestAnimationFrame(() => {
-        requestAnimationFrame(updatePosition)
-      })
-
-      return () => cancelAnimationFrame(rafId)
-    }
-  }, [isActive, isEditing, editedText])
-
   // Auto-resize textarea to fit content
-  useEffect(() => {
-    if (textareaRef.current && isEditing) {
-      // Reset height to get accurate scrollHeight
-      textareaRef.current.style.height = '0px'
-      const scrollHeight = textareaRef.current.scrollHeight
-      textareaRef.current.style.height = `${scrollHeight}px`
-    }
-  }, [isEditing, editedText])
+  useAutoResizeTextarea(textareaRef, editedText, isEditing)
 
   const handleSave = useCallback(() => {
     if (editedText.trim()) {
@@ -93,20 +62,15 @@ export function HighlightItem({
   }, [editedText, highlight.id, highlight.text, onUpdate, onSetEditing])
 
   // Handle click outside to close menu or save
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        if (isEditing) {
-          handleSave()
-        } else {
-          onSetActive(null)
-        }
-      }
+  const handleClickOutside = useCallback(() => {
+    if (isEditing) {
+      handleSave()
+    } else {
+      onSetActive(null)
     }
+  }, [isEditing, handleSave, onSetActive])
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [isEditing, isActive, onSetActive, handleSave])
+  useClickOutside(containerRef, handleClickOutside, isActive || isEditing)
 
   const handleCancel = () => {
     setEditedText(highlight.text)
@@ -152,7 +116,7 @@ export function HighlightItem({
           e.stopPropagation()
           onDelete(highlight.id)
         }}
-        style={{ backgroundColor: '#F6F6F6' }}
+        className="bg-base-100"
       >
         Delete
       </Button>
@@ -166,7 +130,7 @@ export function HighlightItem({
 
       <div
         ref={containerRef}
-        className={`relative py-2 pl-4 pr-2 ${isHighlight ? 'border-l-4 border-[#6F43FF]' : ''}`}
+        className={`relative py-2 pr-2 pl-4 ${isHighlight ? 'border-[#6F43FF] border-l-4' : ''}`}
         onClick={handleItemClick}
       >
         {/* Content */}
@@ -179,24 +143,22 @@ export function HighlightItem({
               onKeyDown={handleKeyDown}
               onClick={(e) => e.stopPropagation()}
               rows={1}
-              className="w-full resize-none bg-transparent text-sm leading-relaxed text-[#444444] !border-0 !outline-none !ring-0 !shadow-none focus:!border-0 focus:!outline-none focus:!ring-0 focus:!shadow-none active:!border-0 active:!outline-none active:!ring-0 active:!shadow-none"
+              className="!border-0 !outline-none !ring-0 !shadow-none focus:!border-0 focus:!outline-none focus:!ring-0 focus:!shadow-none active:!border-0 active:!outline-none active:!ring-0 active:!shadow-none w-full resize-none bg-transparent text-[#444444] text-sm leading-relaxed"
               style={{
                 padding: 0,
                 minHeight: 'auto',
                 overflow: 'hidden',
                 lineHeight: '1.625',
               }}
-              autoFocus
             />
           ) : (
-            <p className="cursor-pointer whitespace-pre-wrap text-sm leading-relaxed text-[#9F9F9F] transition-colors hover:text-[#444444]">
+            <p className="cursor-pointer whitespace-pre-wrap text-[#9F9F9F] text-sm leading-relaxed transition-colors hover:text-[#444444]">
               {highlight.note ? (
                 <>
                   This is a{' '}
                   <button
                     type="button"
-                    className="hover:underline"
-                    style={{ color: '#6F43FF' }}
+                    className="text-link hover:underline"
                     onClick={(e) => e.stopPropagation()}
                   >
                     link

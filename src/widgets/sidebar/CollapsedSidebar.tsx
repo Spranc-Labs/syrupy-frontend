@@ -5,7 +5,7 @@ export function CollapsedSidebar() {
 
   return (
     <aside
-      className="fixed left-0 top-0 z-30 flex h-screen flex-col items-center py-4 transition-all duration-300"
+      className="fixed top-0 left-0 z-30 flex h-screen flex-col items-center py-4 transition-all duration-300"
       style={{ width: `${width}px` }}
     >
       {/* Hamburger Button */}

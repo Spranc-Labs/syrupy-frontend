@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Trash2 } from 'react-feather'
+import { useActionMenuPosition, useAutoResizeTextarea, useClickOutside } from '@/shared/lib/hooks'
 import { Button } from '@/shared/ui'
 
 interface AddNoteInputProps {
@@ -10,44 +11,13 @@ interface AddNoteInputProps {
 export function AddNoteInput({ onAdd }: AddNoteInputProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [noteText, setNoteText] = useState('')
-  const [buttonPosition, setButtonPosition] = useState({ top: 0, left: 0 })
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Calculate button position when expanded
-  useEffect(() => {
-    if (isExpanded) {
-      // Use requestAnimationFrame to ensure DOM has updated
-      const updatePosition = () => {
-        if (containerRef.current) {
-          const rect = containerRef.current.getBoundingClientRect()
-          setButtonPosition({
-            top: rect.top + rect.height / 2,
-            left: rect.left,
-          })
-        }
-      }
-
-      // Initial position
-      requestAnimationFrame(updatePosition)
-
-      // Also update on any layout changes
-      const rafId = requestAnimationFrame(() => {
-        requestAnimationFrame(updatePosition)
-      })
-
-      return () => cancelAnimationFrame(rafId)
-    }
-  }, [isExpanded, noteText])
+  const buttonPosition = useActionMenuPosition(containerRef, isExpanded, [noteText])
 
   // Auto-resize textarea to fit content
-  useEffect(() => {
-    if (textareaRef.current && isExpanded) {
-      textareaRef.current.style.height = '0px'
-      const scrollHeight = textareaRef.current.scrollHeight
-      textareaRef.current.style.height = `${scrollHeight}px`
-    }
-  }, [isExpanded, noteText])
+  useAutoResizeTextarea(textareaRef, noteText, isExpanded)
 
   const handleAdd = useCallback(() => {
     if (noteText.trim()) {
@@ -61,20 +31,7 @@ export function AddNoteInput({ onAdd }: AddNoteInputProps) {
   }, [noteText, onAdd])
 
   // Handle click outside to save
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        isExpanded &&
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        handleAdd()
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [isExpanded, handleAdd])
+  useClickOutside(containerRef, handleAdd, isExpanded)
 
   const handleCancel = () => {
     setNoteText('')
@@ -121,10 +78,10 @@ export function AddNoteInput({ onAdd }: AddNoteInputProps) {
 
   if (!isExpanded) {
     return (
-      <div className="border-l-4 border-base-300 py-2 pl-4 pr-2">
+      <div className="border-base-300 border-l-4 py-2 pr-2 pl-4">
         <button
           type="button"
-          className="cursor-pointer text-sm leading-relaxed text-[#9F9F9F] transition-colors hover:text-[#444444]"
+          className="cursor-pointer text-[#9F9F9F] text-sm leading-relaxed transition-colors hover:text-[#444444]"
           onClick={() => setIsExpanded(true)}
         >
           Add own notes or highlight from preview
@@ -138,7 +95,7 @@ export function AddNoteInput({ onAdd }: AddNoteInputProps) {
       {/* Render action menu via portal */}
       {actionMenu && createPortal(actionMenu, document.body)}
 
-      <div ref={containerRef} className="border-l-4 border-transparent py-2 pl-4 pr-2">
+      <div ref={containerRef} className="border-transparent border-l-4 py-2 pr-2 pl-4">
         <textarea
           ref={textareaRef}
           value={noteText}
@@ -147,14 +104,13 @@ export function AddNoteInput({ onAdd }: AddNoteInputProps) {
           placeholder="Type your note here..."
           onClick={(e) => e.stopPropagation()}
           rows={1}
-          className="w-full resize-none bg-transparent text-sm leading-relaxed text-[#444444] placeholder:text-[#9F9F9F] !border-0 !outline-none !ring-0 !shadow-none focus:!border-0 focus:!outline-none focus:!ring-0 focus:!shadow-none active:!border-0 active:!outline-none active:!ring-0 active:!shadow-none"
+          className="!border-0 !outline-none !ring-0 !shadow-none focus:!border-0 focus:!outline-none focus:!ring-0 focus:!shadow-none active:!border-0 active:!outline-none active:!ring-0 active:!shadow-none w-full resize-none bg-transparent text-[#444444] text-sm leading-relaxed placeholder:text-[#9F9F9F]"
           style={{
             padding: 0,
             minHeight: 'auto',
             overflow: 'hidden',
             lineHeight: '1.625',
           }}
-          autoFocus
         />
       </div>
     </>

@@ -39,56 +39,49 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({
   }
 
   const handleCardClick = (item: BrowserTab, e: React.MouseEvent) => {
-    // Don't navigate if clicking on action buttons
     if ((e.target as HTMLElement).closest('button')) {
       return
     }
 
-    // Open bookmark URL externally
     window.open(item.url, '_blank', 'noopener,noreferrer')
   }
 
   const handleKeyDown = (item: BrowserTab, e: React.KeyboardEvent) => {
-    // Activate on Enter or Space key
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
-      // Open bookmark URL externally
       window.open(item.url, '_blank', 'noopener,noreferrer')
     }
   }
 
   const handlePreviewClick = (item: BrowserTab) => {
     if (navigateToDetail) {
-      // Navigate to bookmark detail page
       navigate({
         to: '/bookmarks/$bookmarkId',
         params: { bookmarkId: String(item.id) },
         search: collection && collectionRoute ? { collection, collectionRoute } : undefined,
-        // @ts-expect-error - Passing bookmark data through navigation state
+        // @ts-expect-error - TanStack Router doesn't type the state parameter, but it supports passing custom state
         state: { bookmark: item },
       })
     } else if (onPreview) {
-      // Call onPreview callback for inline preview
       onPreview(item)
     }
   }
 
   const handleEditClick = (item: BrowserTab) => {
     if (navigateToDetail) {
-      // Navigate to bookmark detail page with edit panel open
-      const searchParams = collection && collectionRoute
-        ? { collection, collectionRoute, panel: 'edit' as const }
-        : { panel: 'edit' as const }
+      const searchParams =
+        collection && collectionRoute
+          ? { collection, collectionRoute, panel: 'edit' as const }
+          : { panel: 'edit' as const }
 
       navigate({
         to: '/bookmarks/$bookmarkId',
         params: { bookmarkId: String(item.id) },
         search: searchParams,
-        // @ts-expect-error - Passing bookmark data through navigation state
+        // @ts-expect-error - TanStack Router doesn't type the state parameter, but it supports passing custom state
         state: { bookmark: item },
       })
     } else if (onEdit) {
-      // Call onEdit callback
       onEdit(item)
     }
   }

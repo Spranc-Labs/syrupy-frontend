@@ -25,6 +25,7 @@ import { Route as AuthenticatedJournalNewRouteImport } from './routes/_authentic
 import { Route as AuthenticatedBookmarksTrashRouteImport } from './routes/_authenticated/bookmarks/trash'
 import { Route as AuthenticatedBookmarksHoarderTabsRouteImport } from './routes/_authenticated/bookmarks/hoarder-tabs'
 import { Route as AuthenticatedBookmarksCategoryRouteImport } from './routes/_authenticated/bookmarks/$category'
+import { Route as AuthenticatedBookmarksBookmarkIdRouteImport } from './routes/_authenticated/bookmarks/$bookmarkId'
 import { Route as AuthenticatedJournalIdEditRouteImport } from './routes/_authenticated/journal.$id.edit'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -110,6 +111,12 @@ const AuthenticatedBookmarksCategoryRoute =
     path: '/bookmarks/$category',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedBookmarksBookmarkIdRoute =
+  AuthenticatedBookmarksBookmarkIdRouteImport.update({
+    id: '/bookmarks/$bookmarkId',
+    path: '/bookmarks/$bookmarkId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedJournalIdEditRoute =
   AuthenticatedJournalIdEditRouteImport.update({
     id: '/$id/edit',
@@ -127,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/journal': typeof AuthenticatedJournalRouteWithChildren
   '/mood': typeof AuthenticatedMoodRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/bookmarks/$bookmarkId': typeof AuthenticatedBookmarksBookmarkIdRoute
   '/bookmarks/$category': typeof AuthenticatedBookmarksCategoryRoute
   '/bookmarks/hoarder-tabs': typeof AuthenticatedBookmarksHoarderTabsRoute
   '/bookmarks/trash': typeof AuthenticatedBookmarksTrashRoute
@@ -145,6 +153,7 @@ export interface FileRoutesByTo {
   '/journal': typeof AuthenticatedJournalRouteWithChildren
   '/mood': typeof AuthenticatedMoodRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/bookmarks/$bookmarkId': typeof AuthenticatedBookmarksBookmarkIdRoute
   '/bookmarks/$category': typeof AuthenticatedBookmarksCategoryRoute
   '/bookmarks/hoarder-tabs': typeof AuthenticatedBookmarksHoarderTabsRoute
   '/bookmarks/trash': typeof AuthenticatedBookmarksTrashRoute
@@ -165,6 +174,7 @@ export interface FileRoutesById {
   '/_authenticated/journal': typeof AuthenticatedJournalRouteWithChildren
   '/_authenticated/mood': typeof AuthenticatedMoodRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/bookmarks/$bookmarkId': typeof AuthenticatedBookmarksBookmarkIdRoute
   '/_authenticated/bookmarks/$category': typeof AuthenticatedBookmarksCategoryRoute
   '/_authenticated/bookmarks/hoarder-tabs': typeof AuthenticatedBookmarksHoarderTabsRoute
   '/_authenticated/bookmarks/trash': typeof AuthenticatedBookmarksTrashRoute
@@ -185,6 +195,7 @@ export interface FileRouteTypes {
     | '/journal'
     | '/mood'
     | '/settings'
+    | '/bookmarks/$bookmarkId'
     | '/bookmarks/$category'
     | '/bookmarks/hoarder-tabs'
     | '/bookmarks/trash'
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/journal'
     | '/mood'
     | '/settings'
+    | '/bookmarks/$bookmarkId'
     | '/bookmarks/$category'
     | '/bookmarks/hoarder-tabs'
     | '/bookmarks/trash'
@@ -222,6 +234,7 @@ export interface FileRouteTypes {
     | '/_authenticated/journal'
     | '/_authenticated/mood'
     | '/_authenticated/settings'
+    | '/_authenticated/bookmarks/$bookmarkId'
     | '/_authenticated/bookmarks/$category'
     | '/_authenticated/bookmarks/hoarder-tabs'
     | '/_authenticated/bookmarks/trash'
@@ -353,6 +366,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBookmarksCategoryRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/bookmarks/$bookmarkId': {
+      id: '/_authenticated/bookmarks/$bookmarkId'
+      path: '/bookmarks/$bookmarkId'
+      fullPath: '/bookmarks/$bookmarkId'
+      preLoaderRoute: typeof AuthenticatedBookmarksBookmarkIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/journal/$id/edit': {
       id: '/_authenticated/journal/$id/edit'
       path: '/$id/edit'
@@ -383,6 +403,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedJournalRoute: typeof AuthenticatedJournalRouteWithChildren
   AuthenticatedMoodRoute: typeof AuthenticatedMoodRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedBookmarksBookmarkIdRoute: typeof AuthenticatedBookmarksBookmarkIdRoute
   AuthenticatedBookmarksCategoryRoute: typeof AuthenticatedBookmarksCategoryRoute
   AuthenticatedBookmarksHoarderTabsRoute: typeof AuthenticatedBookmarksHoarderTabsRoute
   AuthenticatedBookmarksTrashRoute: typeof AuthenticatedBookmarksTrashRoute
@@ -396,6 +417,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedJournalRoute: AuthenticatedJournalRouteWithChildren,
   AuthenticatedMoodRoute: AuthenticatedMoodRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedBookmarksBookmarkIdRoute: AuthenticatedBookmarksBookmarkIdRoute,
   AuthenticatedBookmarksCategoryRoute: AuthenticatedBookmarksCategoryRoute,
   AuthenticatedBookmarksHoarderTabsRoute:
     AuthenticatedBookmarksHoarderTabsRoute,

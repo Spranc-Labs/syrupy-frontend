@@ -37,16 +37,16 @@ export function ReaderModePreview({
 
       <div className="flex-1 space-y-4 p-6">
         {siteName && (
-          <div className="text-xs font-medium uppercase tracking-wide text-primary">{siteName}</div>
+          <div className="font-medium text-primary text-xs uppercase tracking-wide">{siteName}</div>
         )}
 
-        {title && <h2 className="text-2xl font-semibold text-base-content">{title}</h2>}
+        {title && <h2 className="font-semibold text-2xl text-base-content">{title}</h2>}
 
         {description && (
-          <p className="text-base leading-relaxed text-base-content/80">{description}</p>
+          <p className="text-base text-base-content/80 leading-relaxed">{description}</p>
         )}
 
-        <div className="!mt-8 flex items-center gap-2 text-sm text-base-content/60">
+        <div className="!mt-8 flex items-center gap-2 text-base-content/60 text-sm">
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -64,7 +64,7 @@ export function ReaderModePreview({
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <FileText className="mb-4 h-16 w-16 text-base-content/20" />
             <p className="text-base-content/60">No preview content available</p>
-            <p className="mt-1 text-sm text-base-content/40">
+            <p className="mt-1 text-base-content/40 text-sm">
               The page metadata could not be extracted
             </p>
           </div>

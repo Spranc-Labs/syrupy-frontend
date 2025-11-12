@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Heart, Save, Trash2, X } from 'react-feather'
+import { Heart, Save, Trash2 } from 'react-feather'
 import type { BrowserTab } from '@/entities/browsing-session'
-import { Button, IconButton } from '@/shared/ui'
+import { Button, PanelFooter, PanelHeader } from '@/shared/ui'
 import { StyledInput } from './StyledInput'
 import { TagInput } from './TagInput'
 import { ThumbnailImage } from './ThumbnailImage'
@@ -23,10 +23,7 @@ export function EditPanel({ bookmark, onClose, onFavorite, onDelete }: EditPanel
   if (!bookmark) {
     return (
       <div className="flex h-full flex-col bg-base-100">
-        <div className="flex items-center justify-between px-6 py-3">
-          <h2 className="text-lg font-semibold text-base-content">Edit bookmark</h2>
-          <IconButton icon={<X />} size="sm" aria-label="Close edit panel" onClick={onClose} />
-        </div>
+        <PanelHeader title="Edit bookmark" onClose={onClose} closeAriaLabel="Close edit panel" />
         <div className="flex flex-1 items-center justify-center px-6">
           <p className="text-sm text-text-tertiary">Bookmark not found</p>
         </div>
@@ -53,19 +50,13 @@ export function EditPanel({ bookmark, onClose, onFavorite, onDelete }: EditPanel
 
   return (
     <div className="flex h-full flex-col bg-base-100">
-      {/* Header */}
-      <div className="flex items-center justify-between px-6 py-3">
-        <h2 className="text-lg font-semibold text-base-content">Edit bookmark</h2>
-        <IconButton icon={<X />} size="sm" aria-label="Close edit panel" onClick={onClose} />
-      </div>
+      <PanelHeader title="Edit bookmark" onClose={onClose} closeAriaLabel="Close edit panel" />
 
-      {/* Edit Form */}
-      <div className="flex-1 space-y-4 overflow-y-auto px-6 pb-8 pt-4">
-        {/* Bookmark Card Preview */}
+      <div className="flex-1 space-y-4 overflow-y-auto px-6 pt-4 pb-8">
         <div className="flex items-start gap-4">
           <ThumbnailImage item={bookmark} />
           <div className="min-w-0 flex-1">
-            <h3 className="truncate text-[14px] font-medium text-text-dark">
+            <h3 className="truncate font-medium text-[14px] text-text-dark">
               {bookmark.title || 'Untitled'}
             </h3>
             {bookmark.preview?.description && (
@@ -76,9 +67,8 @@ export function EditPanel({ bookmark, onClose, onFavorite, onDelete }: EditPanel
           </div>
         </div>
 
-        {/* Note */}
         <div>
-          <label htmlFor="note" className="mb-2 block text-[10px] font-medium text-text-dark">
+          <label htmlFor="note" className="mb-2 block font-medium text-[10px] text-text-dark">
             Note
           </label>
           <textarea
@@ -91,16 +81,15 @@ export function EditPanel({ bookmark, onClose, onFavorite, onDelete }: EditPanel
           />
         </div>
 
-        {/* Collection */}
         <div>
-          <label htmlFor="collection" className="mb-2 block text-[10px] font-medium text-text-dark">
+          <label htmlFor="collection" className="mb-2 block font-medium text-[10px] text-text-dark">
             Collection
           </label>
           <select
             id="collection"
             value={collection}
             onChange={(e) => setCollection(e.target.value)}
-            className="h-7 w-[40%] appearance-none rounded border border-[#D9D9D9] bg-[#F9F9F9] px-2 py-1 text-[14px] leading-none text-text-dark focus:border-primary focus:outline-none"
+            className="h-7 w-[40%] appearance-none rounded border border-[#D9D9D9] bg-[#F9F9F9] px-2 py-1 text-[14px] text-text-dark leading-none focus:border-primary focus:outline-none"
             style={{
               backgroundImage:
                 "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")",
@@ -117,15 +106,13 @@ export function EditPanel({ bookmark, onClose, onFavorite, onDelete }: EditPanel
           </select>
         </div>
 
-        {/* Tags */}
         <div>
-          <label htmlFor="tags" className="mb-2 block text-[10px] font-medium text-text-dark">
+          <label htmlFor="tags" className="mb-2 block font-medium text-[10px] text-text-dark">
             Tags
           </label>
           <TagInput tags={tags} onAdd={handleAddTag} onRemove={handleRemoveTag} />
         </div>
 
-        {/* URL */}
         <StyledInput
           id="url"
           type="url"
@@ -136,26 +123,29 @@ export function EditPanel({ bookmark, onClose, onFavorite, onDelete }: EditPanel
         />
       </div>
 
-      {/* Footer */}
-      <div className="flex items-center justify-between border-t border-base-300 px-6 py-3">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            icon={<Heart />}
-            onClick={handleFavoriteToggle}
-            active={isFavorite}
-          >
-            Favorite
+      <PanelFooter
+        leftContent={
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              icon={<Heart />}
+              onClick={handleFavoriteToggle}
+              active={isFavorite}
+            >
+              Favorite
+            </Button>
+            <Button variant="outline" size="sm" icon={<Trash2 />} onClick={onDelete}>
+              Delete
+            </Button>
+          </div>
+        }
+        rightContent={
+          <Button variant="outline" size="sm" icon={<Save />}>
+            Save
           </Button>
-          <Button variant="outline" size="sm" icon={<Trash2 />} onClick={onDelete}>
-            Delete
-          </Button>
-        </div>
-        <Button variant="outline" size="sm" icon={<Save />}>
-          Save
-        </Button>
-      </div>
+        }
+      />
     </div>
   )
 }

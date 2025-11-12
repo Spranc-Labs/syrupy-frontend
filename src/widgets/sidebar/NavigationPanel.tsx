@@ -37,7 +37,7 @@ export function NavigationPanel() {
       {/* Slide-out Panel - Stacks to right of sidebar */}
       <div
         className={cn(
-          'fixed left-0 top-0 z-50 h-screen w-64 border-base-300 border-r bg-base-200 shadow-2xl',
+          'fixed top-0 left-0 z-50 h-screen w-64 border-base-300 border-r bg-base-200 shadow-2xl',
           !isResizing && 'transition-transform duration-300 ease-in-out'
         )}
         style={{
@@ -46,8 +46,8 @@ export function NavigationPanel() {
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between border-base-300 border-b py-4 px-6">
-            <h2 className="font-semibold text-text-primary text-lg">Howdy!</h2>
+          <div className="flex items-center justify-between border-base-300 border-b px-6 py-4">
+            <h2 className="font-semibold text-lg text-text-primary">Howdy!</h2>
             <button
               type="button"
               onClick={close}
@@ -81,7 +81,7 @@ export function NavigationPanel() {
                 className={cn(
                   'flex items-center rounded-lg py-1 font-medium text-sm transition-colors',
                   isActive(item.path)
-                    ? 'text-primary font-semibold'
+                    ? 'font-semibold text-primary'
                     : 'text-text-dark hover:text-primary'
                 )}
               >
@@ -91,7 +91,7 @@ export function NavigationPanel() {
           </nav>
 
           {/* Actions */}
-          <div className="flex flex-col gap-1.5 border-base-300 border-t py-4 px-6">
+          <div className="flex flex-col gap-1.5 border-base-300 border-t px-6 py-4">
             <Link
               to="/settings"
               onClick={close}
