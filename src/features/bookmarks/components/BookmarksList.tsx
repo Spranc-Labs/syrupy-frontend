@@ -1,6 +1,8 @@
-import { Eye, Pencil, Trash2 } from 'lucide-react'
+import { useNavigate } from '@tanstack/react-router'
 import type React from 'react'
+import { Edit, Eye, Trash2 } from 'react-feather'
 import type { BrowserTab } from '@/entities/browsing-session'
+import { IconButton } from '@/shared/ui'
 import { ThumbnailImage } from './ThumbnailImage'
 
 interface BookmarksListProps {
@@ -12,6 +14,9 @@ interface BookmarksListProps {
   editLabel?: string
   deleteIcon?: React.ReactNode
   deleteLabel?: string
+  navigateToDetail?: boolean
+  collection?: string
+  collectionRoute?: string
 }
 
 export const BookmarksList: React.FC<BookmarksListProps> = ({
@@ -19,11 +24,16 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({
   onPreview,
   onEdit,
   onDelete,
-  editIcon = <Pencil className="h-4 w-4" />,
+  editIcon = <Edit />,
   editLabel = 'Edit bookmark',
-  deleteIcon = <Trash2 className="h-4 w-4" />,
+  deleteIcon = <Trash2 />,
   deleteLabel = 'Delete bookmark',
+  navigateToDetail = false,
+  collection,
+  collectionRoute,
 }) => {
+  const navigate = useNavigate()
+
   if (items.length === 0) {
     return null
   }
@@ -33,6 +43,8 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({
     if ((e.target as HTMLElement).closest('button')) {
       return
     }
+
+    // Open bookmark URL externally
     window.open(item.url, '_blank', 'noopener,noreferrer')
   }
 
@@ -40,7 +52,44 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({
     // Activate on Enter or Space key
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
+      // Open bookmark URL externally
       window.open(item.url, '_blank', 'noopener,noreferrer')
+    }
+  }
+
+  const handlePreviewClick = (item: BrowserTab) => {
+    if (navigateToDetail) {
+      // Navigate to bookmark detail page
+      navigate({
+        to: '/bookmarks/$bookmarkId',
+        params: { bookmarkId: String(item.id) },
+        search: collection && collectionRoute ? { collection, collectionRoute } : undefined,
+        // @ts-expect-error - Passing bookmark data through navigation state
+        state: { bookmark: item },
+      })
+    } else if (onPreview) {
+      // Call onPreview callback for inline preview
+      onPreview(item)
+    }
+  }
+
+  const handleEditClick = (item: BrowserTab) => {
+    if (navigateToDetail) {
+      // Navigate to bookmark detail page with edit panel open
+      const searchParams = collection && collectionRoute
+        ? { collection, collectionRoute, panel: 'edit' as const }
+        : { panel: 'edit' as const }
+
+      navigate({
+        to: '/bookmarks/$bookmarkId',
+        params: { bookmarkId: String(item.id) },
+        search: searchParams,
+        // @ts-expect-error - Passing bookmark data through navigation state
+        state: { bookmark: item },
+      })
+    } else if (onEdit) {
+      // Call onEdit callback
+      onEdit(item)
     }
   }
 
@@ -79,45 +128,40 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({
             </div>
 
             {/* Action Buttons - Only visible on hover */}
-            <div className="flex flex-shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-              {onPreview && (
-                <button
-                  type="button"
+            <div className="flex flex-shrink-0 items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+              {(onPreview || navigateToDetail) && (
+                <IconButton
+                  icon={<Eye />}
+                  size="sm"
                   onClick={(e) => {
                     e.stopPropagation()
-                    onPreview(item)
+                    handlePreviewClick(item)
                   }}
-                  className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
                   aria-label="Preview bookmark"
-                >
-                  <Eye className="h-4 w-4" />
-                </button>
+                />
               )}
-              {onEdit && (
-                <button
-                  type="button"
+              {(onEdit || navigateToDetail) && (
+                <IconButton
+                  icon={editIcon}
+                  size="sm"
                   onClick={(e) => {
                     e.stopPropagation()
-                    onEdit(item)
+                    handleEditClick(item)
                   }}
-                  className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-text-secondary"
                   aria-label={editLabel}
-                >
-                  {editIcon}
-                </button>
+                />
               )}
               {onDelete && (
-                <button
-                  type="button"
+                <IconButton
+                  icon={deleteIcon}
+                  size="sm"
                   onClick={(e) => {
                     e.stopPropagation()
                     onDelete(item)
                   }}
-                  className="rounded p-2 text-text-quaternary transition-colors hover:bg-base-300 hover:text-error"
                   aria-label={deleteLabel}
-                >
-                  {deleteIcon}
-                </button>
+                  className="hover:text-error"
+                />
               )}
             </div>
           </div>

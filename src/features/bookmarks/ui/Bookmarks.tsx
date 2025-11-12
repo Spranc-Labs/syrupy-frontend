@@ -1,5 +1,5 @@
-import { Bookmark } from 'lucide-react'
 import { useCallback } from 'react'
+import { Bookmark } from 'react-feather'
 import { useBookmarks, useDeleteBookmark } from '@/entities/bookmark'
 import type { BrowserTab } from '@/entities/browsing-session'
 import { BookmarksList } from '@/features/bookmarks/components/BookmarksList'
@@ -47,7 +47,15 @@ function mapBookmarkToBrowserTab(bookmark: BookmarkResponse): BrowserTab {
   }
 }
 
-export function Bookmarks() {
+interface BookmarksProps {
+  collection?: string
+  collectionRoute?: string
+}
+
+export function Bookmarks({
+  collection = 'All Bookmarks',
+  collectionRoute = '/bookmarks',
+}: BookmarksProps = {}) {
   // Use TanStack Query hooks for data fetching
   const { data: bookmarksData = [], isLoading, error } = useBookmarks({ per_page: 1000 })
   const deleteBookmark = useDeleteBookmark()
@@ -115,6 +123,9 @@ export function Bookmarks() {
           onPreview={handlePreview}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          navigateToDetail={true}
+          collection={collection}
+          collectionRoute={collectionRoute}
         />
       )}
     </div>

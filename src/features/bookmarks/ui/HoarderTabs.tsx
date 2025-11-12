@@ -1,12 +1,14 @@
-import { Monitor } from 'lucide-react'
+import { useNavigate } from '@tanstack/react-router'
 import { useCallback } from 'react'
+import { Monitor } from 'react-feather'
 import type { BrowserTab } from '@/entities/browsing-session'
 import { useHoarderTabs } from '@/entities/hoarder-tab'
 import { useDismissPageVisit } from '@/entities/page-visit'
 import { BookmarksList } from '@/features/bookmarks/components/BookmarksList'
 
 export function HoarderTabs() {
-  // Fetch hoarder tabs directly from sync-be pattern detection API
+  const navigate = useNavigate()
+
   const {
     data: hoarderTabs,
     isLoading,
@@ -32,14 +34,29 @@ export function HoarderTabs() {
       pageVisitId: tab.page_visit_id, // Also keep for API calls
     })) || []
 
-  // Action handlers (placeholder implementations)
-  const handlePreview = useCallback((_item: BrowserTab) => {
-    // TODO: Implement preview modal
-  }, [])
+  const handlePreview = useCallback(
+    (item: BrowserTab) => {
+      // Navigate to bookmark detail view with collection info
+      navigate({
+        to: '/bookmarks/$bookmarkId',
+        params: { bookmarkId: String(item.id) },
+        search: { collection: 'Hoarder Tabs', collectionRoute: '/bookmarks/hoarder-tabs' },
+      })
+    },
+    [navigate]
+  )
 
-  const handleEdit = useCallback((_item: BrowserTab) => {
-    // TODO: Implement edit modal
-  }, [])
+  const handleEdit = useCallback(
+    (item: BrowserTab) => {
+      // Navigate to bookmark detail view (same as preview)
+      navigate({
+        to: '/bookmarks/$bookmarkId',
+        params: { bookmarkId: String(item.id) },
+        search: { collection: 'Hoarder Tabs', collectionRoute: '/bookmarks/hoarder-tabs' },
+      })
+    },
+    [navigate]
+  )
 
   const handleDelete = useCallback(
     (item: BrowserTab) => {
