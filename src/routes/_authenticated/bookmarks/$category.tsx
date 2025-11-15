@@ -14,7 +14,7 @@ function RouteComponent() {
     case 'hoarder-tabs':
       return <HoarderTabs />
     case 'reading-list':
-      return <Bookmarks />
+      return <Bookmarks collection="Reading List" collectionRoute="/bookmarks/reading-list" />
     default:
       // Redirect to bookmarks index for unknown categories
       return <Navigate to="/bookmarks" replace />

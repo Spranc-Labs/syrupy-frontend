@@ -1,5 +1,5 @@
-import { AlertCircle, AlertTriangle, CheckCircle, Info } from 'lucide-react'
 import type { HTMLAttributes, ReactNode } from 'react'
+import { AlertCircle, AlertTriangle, CheckCircle, Info } from 'react-feather'
 import { cn } from '@/shared/lib'
 
 export interface AlertProps extends HTMLAttributes<HTMLDivElement> {

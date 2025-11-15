@@ -1,8 +1,9 @@
-import { Bookmark } from 'lucide-react'
 import { useCallback } from 'react'
+import { Bookmark } from 'react-feather'
 import { useBookmarks, useDeleteBookmark } from '@/entities/bookmark'
 import type { BrowserTab } from '@/entities/browsing-session'
 import { BookmarksList } from '@/features/bookmarks/components/BookmarksList'
+import { EmptyState, ErrorState, LoadingState, PageHeader } from '@/shared/ui'
 
 interface BookmarkResponse {
   id: number
@@ -47,7 +48,15 @@ function mapBookmarkToBrowserTab(bookmark: BookmarkResponse): BrowserTab {
   }
 }
 
-export function Bookmarks() {
+interface BookmarksProps {
+  collection?: string
+  collectionRoute?: string
+}
+
+export function Bookmarks({
+  collection = 'All Bookmarks',
+  collectionRoute = '/bookmarks',
+}: BookmarksProps = {}) {
   // Use TanStack Query hooks for data fetching
   const { data: bookmarksData = [], isLoading, error } = useBookmarks({ per_page: 1000 })
   const deleteBookmark = useDeleteBookmark()
@@ -77,37 +86,27 @@ export function Bookmarks() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-base-100">
-        <div className="flex justify-center p-8 text-text-secondary">Loading bookmarks...</div>
+        <LoadingState message="Loading bookmarks..." />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-base-100">
-      {/* Header Section - Centered with padding */}
-      <div className="mx-auto max-w-7xl px-6 py-3">
-        <div>
-          <h1 className="text-primary text-xl">All Bookmarks</h1>
-          <p className="text-sm text-text-tertiary">Your saved bookmarks</p>
-        </div>
-      </div>
+      <PageHeader title="All Bookmarks" description="Your saved bookmarks" />
 
       {/* Bookmark Content - Full Width */}
       {error ? (
         <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4">
-          <div className="text-center">
-            <p className="text-error">Failed to load bookmarks. Please try again.</p>
-          </div>
+          <ErrorState message="Failed to load bookmarks. Please try again." />
         </div>
       ) : bookmarks.length === 0 ? (
         <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4">
-          <div className="text-center">
-            <div className="mb-4 flex justify-center text-text-quaternary">
-              <Bookmark className="h-16 w-16" />
-            </div>
-            <h3 className="mb-2 font-medium text-lg text-text-primary">No bookmarks yet</h3>
-            <p className="text-text-secondary">Your bookmarks will appear here</p>
-          </div>
+          <EmptyState
+            icon={<Bookmark className="h-16 w-16" />}
+            title="No bookmarks yet"
+            description="Your bookmarks will appear here"
+          />
         </div>
       ) : (
         <BookmarksList
@@ -115,6 +114,9 @@ export function Bookmarks() {
           onPreview={handlePreview}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          navigateToDetail={true}
+          collection={collection}
+          collectionRoute={collectionRoute}
         />
       )}
     </div>

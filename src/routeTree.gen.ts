@@ -23,7 +23,9 @@ import { Route as AuthenticatedBookmarksIndexRouteImport } from './routes/_authe
 import { Route as AuthHeyhoAuthorizeRouteImport } from './routes/auth/heyho/authorize'
 import { Route as AuthenticatedJournalNewRouteImport } from './routes/_authenticated/journal.new'
 import { Route as AuthenticatedBookmarksTrashRouteImport } from './routes/_authenticated/bookmarks/trash'
+import { Route as AuthenticatedBookmarksHoarderTabsRouteImport } from './routes/_authenticated/bookmarks/hoarder-tabs'
 import { Route as AuthenticatedBookmarksCategoryRouteImport } from './routes/_authenticated/bookmarks/$category'
+import { Route as AuthenticatedBookmarksBookmarkIdRouteImport } from './routes/_authenticated/bookmarks/$bookmarkId'
 import { Route as AuthenticatedJournalIdEditRouteImport } from './routes/_authenticated/journal.$id.edit'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -97,10 +99,22 @@ const AuthenticatedBookmarksTrashRoute =
     path: '/bookmarks/trash',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedBookmarksHoarderTabsRoute =
+  AuthenticatedBookmarksHoarderTabsRouteImport.update({
+    id: '/bookmarks/hoarder-tabs',
+    path: '/bookmarks/hoarder-tabs',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedBookmarksCategoryRoute =
   AuthenticatedBookmarksCategoryRouteImport.update({
     id: '/bookmarks/$category',
     path: '/bookmarks/$category',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedBookmarksBookmarkIdRoute =
+  AuthenticatedBookmarksBookmarkIdRouteImport.update({
+    id: '/bookmarks/$bookmarkId',
+    path: '/bookmarks/$bookmarkId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedJournalIdEditRoute =
@@ -120,7 +134,9 @@ export interface FileRoutesByFullPath {
   '/journal': typeof AuthenticatedJournalRouteWithChildren
   '/mood': typeof AuthenticatedMoodRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/bookmarks/$bookmarkId': typeof AuthenticatedBookmarksBookmarkIdRoute
   '/bookmarks/$category': typeof AuthenticatedBookmarksCategoryRoute
+  '/bookmarks/hoarder-tabs': typeof AuthenticatedBookmarksHoarderTabsRoute
   '/bookmarks/trash': typeof AuthenticatedBookmarksTrashRoute
   '/journal/new': typeof AuthenticatedJournalNewRoute
   '/auth/heyho/authorize': typeof AuthHeyhoAuthorizeRoute
@@ -137,7 +153,9 @@ export interface FileRoutesByTo {
   '/journal': typeof AuthenticatedJournalRouteWithChildren
   '/mood': typeof AuthenticatedMoodRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/bookmarks/$bookmarkId': typeof AuthenticatedBookmarksBookmarkIdRoute
   '/bookmarks/$category': typeof AuthenticatedBookmarksCategoryRoute
+  '/bookmarks/hoarder-tabs': typeof AuthenticatedBookmarksHoarderTabsRoute
   '/bookmarks/trash': typeof AuthenticatedBookmarksTrashRoute
   '/journal/new': typeof AuthenticatedJournalNewRoute
   '/auth/heyho/authorize': typeof AuthHeyhoAuthorizeRoute
@@ -156,7 +174,9 @@ export interface FileRoutesById {
   '/_authenticated/journal': typeof AuthenticatedJournalRouteWithChildren
   '/_authenticated/mood': typeof AuthenticatedMoodRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/bookmarks/$bookmarkId': typeof AuthenticatedBookmarksBookmarkIdRoute
   '/_authenticated/bookmarks/$category': typeof AuthenticatedBookmarksCategoryRoute
+  '/_authenticated/bookmarks/hoarder-tabs': typeof AuthenticatedBookmarksHoarderTabsRoute
   '/_authenticated/bookmarks/trash': typeof AuthenticatedBookmarksTrashRoute
   '/_authenticated/journal/new': typeof AuthenticatedJournalNewRoute
   '/auth/heyho/authorize': typeof AuthHeyhoAuthorizeRoute
@@ -175,7 +195,9 @@ export interface FileRouteTypes {
     | '/journal'
     | '/mood'
     | '/settings'
+    | '/bookmarks/$bookmarkId'
     | '/bookmarks/$category'
+    | '/bookmarks/hoarder-tabs'
     | '/bookmarks/trash'
     | '/journal/new'
     | '/auth/heyho/authorize'
@@ -192,7 +214,9 @@ export interface FileRouteTypes {
     | '/journal'
     | '/mood'
     | '/settings'
+    | '/bookmarks/$bookmarkId'
     | '/bookmarks/$category'
+    | '/bookmarks/hoarder-tabs'
     | '/bookmarks/trash'
     | '/journal/new'
     | '/auth/heyho/authorize'
@@ -210,7 +234,9 @@ export interface FileRouteTypes {
     | '/_authenticated/journal'
     | '/_authenticated/mood'
     | '/_authenticated/settings'
+    | '/_authenticated/bookmarks/$bookmarkId'
     | '/_authenticated/bookmarks/$category'
+    | '/_authenticated/bookmarks/hoarder-tabs'
     | '/_authenticated/bookmarks/trash'
     | '/_authenticated/journal/new'
     | '/auth/heyho/authorize'
@@ -326,11 +352,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBookmarksTrashRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/bookmarks/hoarder-tabs': {
+      id: '/_authenticated/bookmarks/hoarder-tabs'
+      path: '/bookmarks/hoarder-tabs'
+      fullPath: '/bookmarks/hoarder-tabs'
+      preLoaderRoute: typeof AuthenticatedBookmarksHoarderTabsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/bookmarks/$category': {
       id: '/_authenticated/bookmarks/$category'
       path: '/bookmarks/$category'
       fullPath: '/bookmarks/$category'
       preLoaderRoute: typeof AuthenticatedBookmarksCategoryRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/bookmarks/$bookmarkId': {
+      id: '/_authenticated/bookmarks/$bookmarkId'
+      path: '/bookmarks/$bookmarkId'
+      fullPath: '/bookmarks/$bookmarkId'
+      preLoaderRoute: typeof AuthenticatedBookmarksBookmarkIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/journal/$id/edit': {
@@ -363,7 +403,9 @@ interface AuthenticatedRouteChildren {
   AuthenticatedJournalRoute: typeof AuthenticatedJournalRouteWithChildren
   AuthenticatedMoodRoute: typeof AuthenticatedMoodRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedBookmarksBookmarkIdRoute: typeof AuthenticatedBookmarksBookmarkIdRoute
   AuthenticatedBookmarksCategoryRoute: typeof AuthenticatedBookmarksCategoryRoute
+  AuthenticatedBookmarksHoarderTabsRoute: typeof AuthenticatedBookmarksHoarderTabsRoute
   AuthenticatedBookmarksTrashRoute: typeof AuthenticatedBookmarksTrashRoute
   AuthenticatedBookmarksIndexRoute: typeof AuthenticatedBookmarksIndexRoute
 }
@@ -375,7 +417,10 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedJournalRoute: AuthenticatedJournalRouteWithChildren,
   AuthenticatedMoodRoute: AuthenticatedMoodRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedBookmarksBookmarkIdRoute: AuthenticatedBookmarksBookmarkIdRoute,
   AuthenticatedBookmarksCategoryRoute: AuthenticatedBookmarksCategoryRoute,
+  AuthenticatedBookmarksHoarderTabsRoute:
+    AuthenticatedBookmarksHoarderTabsRoute,
   AuthenticatedBookmarksTrashRoute: AuthenticatedBookmarksTrashRoute,
   AuthenticatedBookmarksIndexRoute: AuthenticatedBookmarksIndexRoute,
 }

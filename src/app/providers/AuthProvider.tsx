@@ -69,17 +69,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLoading(true)
     try {
       const response = await apiClient.post<{
-        data: {
-          AccessToken: string
-          RefreshToken: string
-          IdToken: string
-          ExpiresIn: number
-          TokenType: string
-        }
+        AccessToken: string
+        RefreshToken: string
+        IdToken: string
+        ExpiresIn?: number
+        TokenType?: string
       }>('/auth/login', { email, password })
 
-      if (response.data?.data) {
-        const { AccessToken, RefreshToken } = response.data.data
+      // API returns tokens directly in response.data
+      if (response.data) {
+        const { AccessToken, RefreshToken } = response.data
         if (AccessToken && RefreshToken) {
           tokenStorage.setTokens(AccessToken, RefreshToken)
           console.log('Login successful, tokens stored')

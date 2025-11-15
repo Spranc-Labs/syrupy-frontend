@@ -5,12 +5,16 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    include: ['react-feather'],
+  },
   server: {
     // Need to use this host so that the dev server, when run in docker,
     // can be accessed from the host machine.
     host: '0.0.0.0',
     watch: {
       usePolling: process.env.IN_DEV_CONTAINER === 'true',
+      interval: 100, // Check for changes every 100ms (faster than default 300ms)
     },
     allowedHosts: ['localhost', 'frontend'],
     // HMR configuration for Docker

@@ -1,6 +1,6 @@
-import { Link } from 'lucide-react'
 import type React from 'react'
 import { useState } from 'react'
+import { Link } from 'react-feather'
 import type { BrowserTab } from '@/entities/browsing-session'
 
 interface ThumbnailImageProps {

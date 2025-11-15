@@ -1,5 +1,5 @@
-import { RotateCcw, Trash2, X } from 'lucide-react'
 import { useCallback } from 'react'
+import { RotateCcw, Trash2, X } from 'react-feather'
 import { useDeleteBookmark, useRestoreBookmark, useTrashBookmarks } from '@/entities/bookmark'
 import type { BrowserTab } from '@/entities/browsing-session'
 import { BookmarksList } from '@/features/bookmarks/components/BookmarksList'
@@ -120,6 +120,9 @@ export function Trash() {
           onPreview={handlePreview}
           onEdit={handleRestore}
           onDelete={handlePermanentDelete}
+          navigateToDetail={true}
+          collection="Trash"
+          collectionRoute="/bookmarks/trash"
           // Override button icons/labels for trash context
           editIcon={<RotateCcw className="h-4 w-4" />}
           editLabel="Restore"

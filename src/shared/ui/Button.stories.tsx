@@ -8,7 +8,7 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['primary', 'secondary', 'accent', 'ghost', 'link', 'neutral'],
+      options: ['primary', 'secondary', 'accent', 'ghost', 'link', 'neutral', 'outline'],
     },
     size: {
       control: 'select',
@@ -20,7 +20,7 @@ const meta: Meta<typeof Button> = {
     loading: {
       control: 'boolean',
     },
-    outline: {
+    active: {
       control: 'boolean',
     },
     disabled: {
@@ -74,21 +74,17 @@ export const Variants: Story = {
       <Button variant="ghost">Ghost</Button>
       <Button variant="link">Link</Button>
       <Button variant="neutral">Neutral</Button>
+      <Button variant="outline">Outline</Button>
     </div>
   ),
 }
 
-export const Outline: Story = {
+export const OutlineWithActive: Story = {
   render: () => (
     <div className="flex flex-wrap gap-4">
-      <Button variant="primary" outline>
-        Primary
-      </Button>
-      <Button variant="secondary" outline>
-        Secondary
-      </Button>
-      <Button variant="accent" outline>
-        Accent
+      <Button variant="outline">Outline Default</Button>
+      <Button variant="outline" active>
+        Outline Active
       </Button>
     </div>
   ),

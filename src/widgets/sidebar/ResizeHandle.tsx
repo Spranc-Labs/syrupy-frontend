@@ -62,11 +62,11 @@ export function ResizeHandle() {
   return (
     <div
       ref={handleRef}
-      className="group absolute -right-4 top-0 z-40 h-full w-8 cursor-col-resize"
+      className="group -right-4 absolute top-0 z-40 h-full w-8 cursor-col-resize"
       title="Resize sidebar"
     >
       {/* Visual indicator - line that appears on hover */}
-      <div className="absolute right-4 top-0 h-full w-1 bg-transparent transition-colors group-hover:bg-indigo-500 group-active:bg-indigo-600" />
+      <div className="absolute top-0 right-4 h-full w-1 bg-transparent transition-colors group-hover:bg-indigo-500 group-active:bg-indigo-600" />
     </div>
   )
 }

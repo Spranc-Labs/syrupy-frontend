@@ -1,12 +1,15 @@
-import { Monitor } from 'lucide-react'
+import { useNavigate } from '@tanstack/react-router'
 import { useCallback } from 'react'
+import { Monitor } from 'react-feather'
 import type { BrowserTab } from '@/entities/browsing-session'
 import { useHoarderTabs } from '@/entities/hoarder-tab'
 import { useDismissPageVisit } from '@/entities/page-visit'
 import { BookmarksList } from '@/features/bookmarks/components/BookmarksList'
+import { EmptyState, ErrorState, LoadingState, PageHeader } from '@/shared/ui'
 
 export function HoarderTabs() {
-  // Fetch hoarder tabs directly from sync-be pattern detection API
+  const navigate = useNavigate()
+
   const {
     data: hoarderTabs,
     isLoading,
@@ -32,14 +35,16 @@ export function HoarderTabs() {
       pageVisitId: tab.page_visit_id, // Also keep for API calls
     })) || []
 
-  // Action handlers (placeholder implementations)
-  const handlePreview = useCallback((_item: BrowserTab) => {
-    // TODO: Implement preview modal
-  }, [])
-
-  const handleEdit = useCallback((_item: BrowserTab) => {
-    // TODO: Implement edit modal
-  }, [])
+  const handleNavigateToDetail = useCallback(
+    (item: BrowserTab) => {
+      navigate({
+        to: '/bookmarks/$bookmarkId',
+        params: { bookmarkId: String(item.id) },
+        search: { collection: 'Hoarder Tabs', collectionRoute: '/bookmarks/hoarder-tabs' },
+      })
+    },
+    [navigate]
+  )
 
   const handleDelete = useCallback(
     (item: BrowserTab) => {
@@ -52,47 +57,36 @@ export function HoarderTabs() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-base-100">
-        <div className="flex justify-center p-8 text-text-secondary">Loading hoarder tabs...</div>
+        <LoadingState message="Loading hoarder tabs..." />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-base-100">
-      {/* Header Section - Centered with padding */}
-      <div className="mx-auto max-w-7xl px-6 py-3">
-        <div>
-          <h1 className="text-primary text-xl">Hoarder Tabs</h1>
-          <p className="text-sm text-text-tertiary">
-            Tabs detected as potential hoarder tabs from your browsing history
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Hoarder Tabs"
+        description="Tabs detected as potential hoarder tabs from your browsing history"
+      />
 
       {/* Tab Content - Full Width */}
       {error ? (
         <div className="mx-auto max-w-7xl px-4">
-          <div className="py-12 text-center">
-            <p className="text-error">Failed to load hoarder tabs. Please try again.</p>
-          </div>
+          <ErrorState message="Failed to load hoarder tabs. Please try again." />
         </div>
       ) : browserTabs.length === 0 ? (
         <div className="mx-auto max-w-7xl px-4">
-          <div className="py-12 text-center">
-            <div className="mb-4 flex justify-center text-text-quaternary">
-              <Monitor className="h-16 w-16" />
-            </div>
-            <h3 className="mb-2 font-medium text-lg text-text-primary">No hoarder tabs found</h3>
-            <p className="text-text-secondary">
-              Tabs that may need attention will appear here based on age and usage patterns
-            </p>
-          </div>
+          <EmptyState
+            icon={<Monitor className="h-16 w-16" />}
+            title="No hoarder tabs found"
+            description="Tabs that may need attention will appear here based on age and usage patterns"
+          />
         </div>
       ) : (
         <BookmarksList
           items={browserTabs}
-          onPreview={handlePreview}
-          onEdit={handleEdit}
+          onPreview={handleNavigateToDetail}
+          onEdit={handleNavigateToDetail}
           onDelete={handleDelete}
         />
       )}
