@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { ChevronUp, Download, HelpCircle } from 'react-feather'
 import { Button, EmptyState, IconButton, PanelFooter, PanelHeader } from '@/shared/ui'
-import { AddNoteInput } from './AddNoteInput'
 import { HighlightItem } from './HighlightItem'
 
 interface Highlight {
@@ -71,6 +70,7 @@ export function HighlightsPanel({
           highlights.map((highlight) => (
             <HighlightItem
               key={highlight.id}
+              mode="display"
               highlight={highlight}
               onDelete={handleDelete}
               onClear={handleClear}
@@ -84,7 +84,7 @@ export function HighlightsPanel({
         )}
 
         {/* Always show "Add note" at bottom */}
-        <AddNoteInput onAdd={handleAdd} />
+        <HighlightItem mode="create" onAdd={handleAdd} />
       </div>
 
       <PanelFooter

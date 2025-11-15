@@ -953,43 +953,304 @@ function MyComponent() {
 }
 ```
 
-### Form Handling with React Hook Form
+### Form Handling with TanStack Form + Zod
+
+TanStack Form natively supports Zod schemas via Standard Schema (Zod 3.24.0+). No adapters needed!
+
 ```typescript
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 
-const schema = z.object({
-  email: z.string().email('Invalid email'),
+// 1. Define Zod schema for validation
+const loginSchema = z.object({
+  email: z.string().email({ message: 'Invalid email format' }),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 })
 
-type FormData = z.infer<typeof schema>
+// 2. Infer TypeScript type from schema
+type LoginFormData = z.infer<typeof loginSchema>
 
 function LoginForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
+  // 3. Create form instance with Zod validation
+  const form = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    } as LoginFormData,
+    validators: {
+      onChange: loginSchema, // Pass schema directly! (Standard Schema support)
+    },
+    onSubmit: async ({ value }) => {
+      // value is type-safe and validated
+      await apiClient.post('/auth/login', value)
+    },
   })
 
-  const onSubmit = (data: FormData) => {
-    console.log(data)
+  // 4. Handle form submit
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    form.handleSubmit()
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Input
-        {...register('email')}
-        label="Email"
-        error={errors.email?.message}
-      />
-      <Input
-        {...register('password')}
-        type="password"
-        label="Password"
-        error={errors.password?.message}
-      />
-      <Button type="submit">Login</Button>
-    </form>
+    <div>
+      {/* 5. Use form fields */}
+      <form.Field name="email">
+        {(field) => (
+          <Input
+            label="Email"
+            type="email"
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            error={field.state.meta.errors?.[0]} // Zod error messages appear here
+          />
+        )}
+      </form.Field>
+
+      <form.Field name="password">
+        {(field) => (
+          <Input
+            label="Password"
+            type="password"
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            error={field.state.meta.errors?.[0]}
+          />
+        )}
+      </form.Field>
+
+      <Button onClick={handleSubmit}>Login</Button>
+    </div>
+  )
+}
+```
+
+### Field-Level Validation with Zod
+
+You can also use Zod schemas at the field level for granular control:
+
+```typescript
+import { useForm } from '@tanstack/react-form'
+import { z } from 'zod'
+
+function SignupForm() {
+  const form = useForm({
+    defaultValues: {
+      email: '',
+      username: '',
+      password: '',
+      confirmPassword: '',
+    },
+    onSubmit: async ({ value }) => {
+      await apiClient.post('/auth/signup', value)
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    form.handleSubmit()
+  }
+
+  return (
+    <div>
+      {/* Field-level Zod validation */}
+      <form.Field
+        name="email"
+        validators={{
+          onChange: z.string().email({ message: 'Invalid email format' }),
+        }}
+      >
+        {(field) => (
+          <Input
+            label="Email"
+            type="email"
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            onBlur={field.handleBlur}
+            error={field.state.meta.errors?.[0]}
+          />
+        )}
+      </form.Field>
+
+      {/* Async validation with debouncing */}
+      <form.Field
+        name="username"
+        asyncDebounceMs={500}
+        validators={{
+          onChangeAsync: async ({ value }) => {
+            if (!value) return 'Username is required'
+            // Check availability on server
+            const available = await apiClient.get(`/users/check/${value}`)
+            return available ? undefined : 'Username already taken'
+          },
+        }}
+      >
+        {(field) => (
+          <Input
+            label="Username"
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            onBlur={field.handleBlur}
+            error={field.state.meta.errors?.[0]}
+          />
+        )}
+      </form.Field>
+
+      {/* Cross-field validation */}
+      <form.Field name="password">
+        {(field) => (
+          <Input
+            label="Password"
+            type="password"
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            onBlur={field.handleBlur}
+          />
+        )}
+      </form.Field>
+
+      <form.Field
+        name="confirmPassword"
+        validators={{
+          onChangeListenTo: ['password'],
+          onChange: ({ value, fieldApi }) => {
+            const password = fieldApi.form.getFieldValue('password')
+            return value === password ? undefined : 'Passwords do not match'
+          },
+        }}
+      >
+        {(field) => (
+          <Input
+            label="Confirm Password"
+            type="password"
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            onBlur={field.handleBlur}
+            error={field.state.meta.errors?.[0]}
+          />
+        )}
+      </form.Field>
+
+      <Button onClick={handleSubmit}>Sign Up</Button>
+    </div>
+  )
+}
+```
+
+### Complex Forms with Schemas and Custom Components
+
+Store Zod schemas in the entity layer for reusability:
+
+```typescript
+// entities/bookmark/schemas.ts
+import { z } from 'zod'
+
+export const bookmarkFormSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().optional(),
+  note: z.string().optional(),
+  collection: z.string(),
+  tags: z.array(z.string()),
+  url: z.string().url({ message: 'Must be a valid URL' }).or(z.literal('')),
+  isFavorite: z.boolean(),
+})
+
+export type BookmarkFormData = z.infer<typeof bookmarkFormSchema>
+```
+
+```typescript
+// features/bookmarks/components/EditPanel.tsx
+import { useForm } from '@tanstack/react-form'
+import { bookmarkFormSchema, type BookmarkFormData } from '@/entities/bookmark'
+import { TagInput, Textarea, Input } from '@/shared/ui'
+
+interface EditPanelProps {
+  bookmark: Bookmark
+  onClose: () => void
+}
+
+export function EditPanel({ bookmark, onClose }: EditPanelProps) {
+  const form = useForm({
+    defaultValues: {
+      title: bookmark.title ?? '',
+      description: bookmark.description ?? '',
+      tags: bookmark.tags?.map(t => t.name) ?? [],
+      note: '',
+      collection: 'Unsorted',
+      url: bookmark.url,
+      isFavorite: false,
+    } as BookmarkFormData,
+    validators: {
+      onChange: bookmarkFormSchema, // Zod validation with Standard Schema
+    },
+    onSubmit: async ({ value }) => {
+      await apiClient.put(`/bookmarks/${bookmark.id}`, value)
+      onClose()
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    form.handleSubmit()
+  }
+
+  return (
+    <div>
+      {/* Text input with validation */}
+      <form.Field name="title">
+        {(field) => (
+          <Input
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            error={field.state.meta.errors?.[0]}
+            placeholder="Title"
+          />
+        )}
+      </form.Field>
+
+      {/* URL input with validation */}
+      <form.Field name="url">
+        {(field) => (
+          <Input
+            type="url"
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            error={field.state.meta.errors?.[0]}
+            placeholder="https://example.com"
+          />
+        )}
+      </form.Field>
+
+      {/* Textarea */}
+      <form.Field name="note">
+        {(field) => (
+          <Textarea
+            value={field.state.value ?? ''}
+            onChange={(e) => field.handleChange(e.target.value)}
+            placeholder="Add note..."
+          />
+        )}
+      </form.Field>
+
+      {/* Custom component (array field) */}
+      <form.Field name="tags">
+        {(field) => (
+          <TagInput
+            tags={field.state.value}
+            onAdd={(tag) => {
+              if (!field.state.value.includes(tag)) {
+                field.handleChange([...field.state.value, tag])
+              }
+            }}
+            onRemove={(tagToRemove) => {
+              field.handleChange(field.state.value.filter((t) => t !== tagToRemove))
+            }}
+          />
+        )}
+      </form.Field>
+
+      <Button onClick={handleSubmit}>Save</Button>
+    </div>
   )
 }
 ```

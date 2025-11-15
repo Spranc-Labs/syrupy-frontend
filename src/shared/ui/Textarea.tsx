@@ -1,9 +1,9 @@
-import type { InputHTMLAttributes } from 'react'
+import type { TextareaHTMLAttributes } from 'react'
 import { cn } from '@/shared/lib'
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   /**
-   * Input label
+   * Textarea label
    */
   label?: string
   /**
@@ -15,37 +15,37 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
    */
   helperText?: string
   /**
-   * Input size
-   * @default 'md'
-   */
-  inputSize?: 'xs' | 'sm' | 'md' | 'lg'
-  /**
    * Full width
    * @default false
    */
   fullWidth?: boolean
+  /**
+   * Number of visible text rows
+   * @default 3
+   */
+  rows?: number
 }
 
 /**
- * Input component with consistent styling matching Textarea
+ * Textarea component matching Input component design
  *
  * @example
- * <Input
- *   label="Email"
- *   type="email"
- *   error={errors.email}
- *   helperText="We'll never share your email"
+ * <Textarea
+ *   label="Description"
+ *   rows={4}
+ *   error={errors.description}
+ *   helperText="Enter a brief description"
  * />
  */
-export function Input({
+export function Textarea({
   label,
   error,
   helperText,
-  inputSize = 'md',
   fullWidth = false,
+  rows = 3,
   className,
   ...props
-}: InputProps) {
+}: TextareaProps) {
   return (
     <div className={cn({ 'w-full': fullWidth })}>
       {label && (
@@ -53,21 +53,17 @@ export function Input({
           {label}
         </label>
       )}
-      <input
+      <textarea
         className={cn(
-          'rounded border border-border bg-input-bg px-3 py-2 text-[14px] text-text-dark',
+          'w-full rounded border border-border bg-input-bg px-3 py-2 text-[14px] text-text-dark',
           'focus:border-primary focus:shadow-none focus:outline-none',
           'placeholder:text-text-tertiary',
           {
             'border-error focus:border-error': error,
-            'h-7 px-2 text-xs': inputSize === 'xs',
-            'h-8 px-2 text-sm': inputSize === 'sm',
-            'h-10 px-3 text-base': inputSize === 'md',
-            'h-12 px-4 text-lg': inputSize === 'lg',
-            'w-full': fullWidth,
           },
           className
         )}
+        rows={rows}
         {...props}
       />
       {error && <p className="mt-1 text-[10px] text-error">{error}</p>}

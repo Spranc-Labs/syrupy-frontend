@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { Link as LinkIcon, Plus } from 'react-feather'
 import type { BrowserTab } from '@/entities/browsing-session'
-import { Button, EmptyState, PanelFooter, PanelHeader } from '@/shared/ui'
+import { Button, EmptyState, Input, PanelFooter, PanelHeader } from '@/shared/ui'
 import { BookmarksList } from './BookmarksList'
-import { StyledInput } from './StyledInput'
 
 interface LinksPanelProps {
   linkedBookmarks?: BrowserTab[]
@@ -53,13 +52,13 @@ export function LinksPanel({
       {/* Add Link Input */}
       <div className="border-base-300 border-b px-6 py-3">
         <div className="flex items-end gap-2">
-          <StyledInput
+          <Input
             type="url"
             value={newLinkUrl}
             onChange={(e) => setNewLinkUrl(e.target.value)}
             placeholder="Add related link URL..."
-            className="flex-1"
-            containerClassName="flex-1"
+            fullWidth
+            className="h-7 rounded border border-border bg-input-bg px-2 text-[14px] text-text-dark focus:border-primary focus:shadow-none focus:outline-none"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 handleAddLink()

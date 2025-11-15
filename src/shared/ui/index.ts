@@ -10,4 +10,6 @@ export { LoadingState, type LoadingStateProps } from './LoadingState'
 export { PageHeader, type PageHeaderProps } from './PageHeader'
 export { PanelFooter, type PanelFooterProps } from './PanelFooter'
 export { PanelHeader, type PanelHeaderProps } from './PanelHeader'
+export { TagInput, type TagInputProps } from './TagInput'
+export { Textarea, type TextareaProps } from './Textarea'
 // PLOP_INJECT_EXPORT
