@@ -2,7 +2,9 @@ import { useNavigate } from '@tanstack/react-router'
 import type React from 'react'
 import { Edit, Eye, Trash2 } from 'react-feather'
 import type { BrowserTab } from '@/entities/browsing-session'
+import { cn } from '@/shared/lib'
 import { IconButton } from '@/shared/ui'
+import { useSidebarStore } from '@/stores/useSidebarStore'
 import { ThumbnailImage } from './ThumbnailImage'
 
 interface BookmarksListProps {
@@ -33,6 +35,7 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({
   collectionRoute,
 }) => {
   const navigate = useNavigate()
+  const { isCollapsed } = useSidebarStore()
 
   if (items.length === 0) {
     return null
@@ -98,7 +101,12 @@ export const BookmarksList: React.FC<BookmarksListProps> = ({
           onClick={(e) => handleCardClick(item, e)}
           onKeyDown={(e) => handleKeyDown(item, e)}
         >
-          <div className="mx-auto flex max-w-7xl items-start gap-4 px-6 py-4">
+          <div
+            className={cn(
+              'flex items-start gap-4 py-4',
+              isCollapsed ? 'w-full px-10' : 'mx-auto max-w-7xl px-6'
+            )}
+          >
             <ThumbnailImage item={item} />
 
             {/* Content */}

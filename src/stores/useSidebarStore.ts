@@ -15,7 +15,7 @@ const MIN_WIDTH = 220
 const MAX_WIDTH = 600
 const DEFAULT_WIDTH = 256
 const COLLAPSED_WIDTH = 64
-const COLLAPSE_THRESHOLD = 180
+const COLLAPSE_THRESHOLD = 140
 
 export const useSidebarStore = create<SidebarStore>()(
   persist(

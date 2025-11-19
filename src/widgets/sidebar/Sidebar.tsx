@@ -21,8 +21,13 @@ export function Sidebar() {
   const isActive = (path: string) => location.pathname === path
   const isBookmarksPage = location.pathname.startsWith('/bookmarks')
 
-  // Show collapsed view when sidebar is collapsed
-  if (isCollapsed) {
+  // Hide sidebar completely when collapsed on any bookmark page
+  if (isCollapsed && isBookmarksPage) {
+    return null
+  }
+
+  // Show collapsed view when sidebar is collapsed on non-bookmark pages
+  if (isCollapsed && !isBookmarksPage) {
     return <CollapsedSidebar />
   }
 
@@ -64,29 +69,13 @@ export function Sidebar() {
           className="w-full border-base-300 border-b px-6 py-4 text-left transition-colors hover:bg-base-300"
         >
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 flex-shrink items-center justify-center rounded bg-primary/10 font-semibolsssssssemibold">
+            <div className="flex h-8 w-8 flex-shrink items-center justify-center rounded bg-primary/10 font-semibold">
               {getUserDisplayName().charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 overflow-hidden">
-              <p className="sm smprimaprimary sm smprimaprimary sm smprimapr">
-                {getUserDisplayName()}
-              </p>
+              <p className="truncate font-medium text-primary">{getUserDisplayName()}</p>
               <p className="truncate text-text-tertiary text-xs">Personal Workspace</p>
             </div>
-            <svg
-              className="h-5 w-5 flex-shrink-0 text-text-tertiary"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-label="Menu icon"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
           </div>
         </button>
 
@@ -163,7 +152,7 @@ export function Sidebar() {
             </>
           ) : (
             <div className="flex h-full items-center justify-center px-4 text-center">
-              <p className="sm smertiatertiary sm smer">
+              <p className="text-sm text-text-tertiary">
                 Click the profile above to access navigation
               </p>
             </div>
@@ -173,7 +162,7 @@ export function Sidebar() {
         {/* Brand Footer */}
         <div className="border-base-300 border-t p-4">
           <div className="flex items-center gap-2 px-3 py-2">
-            <span className="font-bold text-lgaprimaprimary">Syrupy</span>
+            <span className="font-bold text-lg text-primary">Syrupy</span>
           </div>
         </div>
       </aside>

@@ -34,7 +34,9 @@ interface DisplayModeProps extends BaseProps {
 interface CreateModeProps extends BaseProps {
   mode: 'create'
   onAdd: (text: string) => void
+  onCancel?: () => void
   placeholder?: string
+  autoExpand?: boolean
   highlight?: never
   onDelete?: never
   onClear?: never
@@ -51,7 +53,9 @@ export function HighlightItem(props: HighlightItemProps) {
   const { mode } = props
 
   // Create mode: manage local state for new note
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(
+    mode === 'create' ? (props.autoExpand ?? false) : false
+  )
   const [noteText, setNoteText] = useState('')
 
   // Display mode: manage editing state
@@ -60,6 +64,7 @@ export function HighlightItem(props: HighlightItemProps) {
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const actionMenuRef = useRef<HTMLDivElement>(null)
 
   // Determine which text and state to use based on mode
   const currentText = mode === 'create' ? noteText : editedText
@@ -103,16 +108,19 @@ export function HighlightItem(props: HighlightItemProps) {
       } else {
         setNoteText('')
         setIsExpanded(false)
+        props.onCancel?.()
       }
     } else {
       // Display mode: update existing
       if (editedText.trim()) {
         props.onUpdate(props.highlight.id, editedText)
         props.onSetEditing(null)
+        props.onSetActive(null)
       } else {
         // If empty, restore original text and exit edit mode
         setEditedText(props.highlight.text)
         props.onSetEditing(null)
+        props.onSetActive(null)
       }
     }
   }, [mode, noteText, editedText, props])
@@ -139,12 +147,13 @@ export function HighlightItem(props: HighlightItemProps) {
     return undefined
   }, [isActiveOrExpanded, isEditingOrExpanded])
 
-  useClickOutside(containerRef, handleClickOutside, clickOutsideEnabled)
+  useClickOutside([containerRef, actionMenuRef], handleClickOutside, clickOutsideEnabled)
 
   const handleCancel = () => {
     if (mode === 'create') {
       setNoteText('')
       setIsExpanded(false)
+      props.onCancel?.()
     } else {
       setEditedText(props.highlight.text)
       props.onSetEditing(null)
@@ -182,18 +191,25 @@ export function HighlightItem(props: HighlightItemProps) {
     if (mode === 'create') {
       setNoteText('')
       setIsExpanded(false)
+      props.onCancel?.()
     } else {
       props.onDelete(props.highlight.id)
     }
   }
 
+  // Calculate safe position for delete button (prevent going off-screen left)
+  const deleteButtonLeft = Math.max(8, buttonPosition.left - 8)
+  const deleteButtonTransform =
+    buttonPosition.left < 100 ? 'translate(0, -50%)' : 'translate(-100%, -50%)'
+
   const actionMenu = (isActiveOrExpanded || isEditingOrExpanded) && (
     <div
+      ref={actionMenuRef}
       className="fixed z-[9999] flex items-center gap-2 whitespace-nowrap opacity-100"
       style={{
         top: `${buttonPosition.top}px`,
-        left: `${buttonPosition.left - 8}px`,
-        transform: 'translate(-100%, -50%)',
+        left: `${deleteButtonLeft}px`,
+        transform: deleteButtonTransform,
       }}
     >
       <Button

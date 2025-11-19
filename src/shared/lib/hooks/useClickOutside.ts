@@ -1,7 +1,7 @@
 import { type RefObject, useEffect } from 'react'
 
 export function useClickOutside<T extends HTMLElement>(
-  ref: RefObject<T>,
+  ref: RefObject<T> | RefObject<T>[],
   handler: (event: MouseEvent) => void,
   enabled = true
 ) {
@@ -9,7 +9,12 @@ export function useClickOutside<T extends HTMLElement>(
     if (!enabled) return undefined
 
     function handleClickOutside(event: MouseEvent) {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
+      const refs = Array.isArray(ref) ? ref : [ref]
+
+      // Check if click is inside ANY of the refs
+      const isInside = refs.some((r) => r.current?.contains(event.target as Node))
+
+      if (!isInside) {
         handler(event)
       }
     }
