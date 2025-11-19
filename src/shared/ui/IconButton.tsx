@@ -15,7 +15,7 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
    * Button size - sets both width and height
    * @default 'md'
    */
-  size?: 'xs' | 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   /**
    * Loading state
    * @default false
@@ -28,6 +28,7 @@ const sizeClasses = {
   sm: 'h-[24px] w-[24px]',
   md: 'h-[32px] w-[32px]',
   lg: 'h-[40px] w-[40px]',
+  xl: 'h-[48px] w-[48px]',
 }
 
 const iconSizeClasses = {
@@ -35,6 +36,7 @@ const iconSizeClasses = {
   sm: 'h-3.5 w-3.5',
   md: 'h-4 w-4',
   lg: 'h-5 w-5',
+  xl: 'h-6 w-6',
 }
 
 /**

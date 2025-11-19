@@ -94,7 +94,7 @@ export function Button({
           active ? 'text-[#6F43FF]' : 'text-[#444444]',
           'hover:bg-base-200',
           isSmallSize && 'h-[24px] gap-1 px-2 text-xs',
-          !isSmallSize && 'h-auto gap-2 px-4 py-2',
+          !isSmallSize && 'h-auto gap-1 px-2.5 py-1 text-sm',
         ],
         className
       )}

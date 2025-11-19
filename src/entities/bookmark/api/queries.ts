@@ -84,3 +84,20 @@ export function useTrashBookmarks(
     ...options,
   })
 }
+
+interface IframeCheckResponse {
+  success: boolean
+  embeddable: boolean
+  reason: string
+  url: string
+}
+
+export async function checkIframeEmbeddable(url: string): Promise<IframeCheckResponse> {
+  const response = await apiClient.post<IframeCheckResponse>('/bookmarks/check_iframe', {
+    url,
+  })
+
+  // ApiClient wraps response, so we need to extract the actual response data
+  // The backend returns the data directly, not wrapped in a data field
+  return response as unknown as IframeCheckResponse
+}

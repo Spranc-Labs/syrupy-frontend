@@ -15,7 +15,7 @@ export function SidebarItem({ label, count, path, isActive, icon }: SidebarItemP
     <Link
       to={path}
       className={cn(
-        'flex items-center justify-between rounded-lg px-3 py-1 text-sm transition-colors',
+        'flex items-center justify-between rounded-lg px-3 py-0.5 text-sm transition-colors',
         isActive ? 'font-semibold text-primary' : 'text-text-dark hover:text-primary'
       )}
     >
@@ -23,7 +23,7 @@ export function SidebarItem({ label, count, path, isActive, icon }: SidebarItemP
         {icon && <span className="text-text-tertiary">{icon}</span>}
         <span>{label}</span>
       </div>
-      {count !== undefined && <span className="text-text-tertiary text-xs">{count}</span>}
+      {count !== undefined && <span className="text-text-quaternary text-xs">{count}</span>}
     </Link>
   )
 }

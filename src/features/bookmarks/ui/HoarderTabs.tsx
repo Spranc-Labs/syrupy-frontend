@@ -1,4 +1,3 @@
-import { useNavigate } from '@tanstack/react-router'
 import { useCallback } from 'react'
 import { Monitor } from 'react-feather'
 import type { BrowserTab } from '@/entities/browsing-session'
@@ -8,8 +7,6 @@ import { BookmarksList } from '@/features/bookmarks/components/BookmarksList'
 import { EmptyState, ErrorState, LoadingState, PageHeader } from '@/shared/ui'
 
 export function HoarderTabs() {
-  const navigate = useNavigate()
-
   const {
     data: hoarderTabs,
     isLoading,
@@ -34,17 +31,6 @@ export function HoarderTabs() {
       },
       pageVisitId: tab.page_visit_id, // Also keep for API calls
     })) || []
-
-  const handleNavigateToDetail = useCallback(
-    (item: BrowserTab) => {
-      navigate({
-        to: '/bookmarks/$bookmarkId',
-        params: { bookmarkId: String(item.id) },
-        search: { collection: 'Hoarder Tabs', collectionRoute: '/bookmarks/hoarder-tabs' },
-      })
-    },
-    [navigate]
-  )
 
   const handleDelete = useCallback(
     (item: BrowserTab) => {
@@ -85,9 +71,10 @@ export function HoarderTabs() {
       ) : (
         <BookmarksList
           items={browserTabs}
-          onPreview={handleNavigateToDetail}
-          onEdit={handleNavigateToDetail}
           onDelete={handleDelete}
+          navigateToDetail={true}
+          collection="Hoarder Tabs"
+          collectionRoute="/bookmarks/hoarder-tabs"
         />
       )}
     </div>

@@ -7,7 +7,12 @@ export {
   useUpdateBookmark,
 } from './api/mutations'
 
-export { useBookmark, useBookmarks, useTrashBookmarks } from './api/queries'
+export {
+  checkIframeEmbeddable,
+  useBookmark,
+  useBookmarks,
+  useTrashBookmarks,
+} from './api/queries'
 export type {
   BookmarkFormData,
   CreateBookmarkFormData,
